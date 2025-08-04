@@ -1,1 +1,0 @@
-import{a as r,b as i,z as n}from"./chunk-ZBUEBWHJ.js";var e=class t{constructor(s){this.http=s}getPortfolioData(){return this.http.get("assets/portfolio.json")}static \u0275fac=function(o){return new(o||t)(i(n))};static \u0275prov=r({token:t,factory:t.\u0275fac,providedIn:"root"})};export{e as a};
