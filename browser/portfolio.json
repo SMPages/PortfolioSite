@@ -1,0 +1,122 @@
+{
+  "personal": {
+    "name": "Sebastian Marciales",
+    "title": "Full Stack Developer",
+    "subtitle": "Especialista en C# y .NET",
+    "greeting": "Hola 👋, soy",
+    "quote": {
+      "text": "Algunas personas no les gusta el cambio, pero necesitas abrazar el cambio si la alternativa es el desastre. No te detengas hasta estar orgulloso de lo que has construido.",
+      "author": "Elon Musk"
+    },
+    "about": {
+      "title": "Sobre mí",
+      "description": "Soy Sebastián Marciales, Ingeniero de Sistemas graduado de la Universidad Cooperativa de Colombia, con tarjeta profesional COPNIA y más de 3 años de experiencia como Desarrollador Full Stack. Me especializo en el desarrollo de aplicaciones web seguras, escalables y de alto rendimiento utilizando C# y .NET, junto con tecnologías frontend como Angular, React, Vue, HTML, Python y Django.",
+      "experience": [
+        "Desarrollo Full Stack con C# .NET, .NET Core y Python Django",
+        "Frontend moderno con Angular, React, Vue y HTML",
+        "Diseño, desarrollo y consumo de API REST seguras y monitoreadas",
+        "Manejo de bases de datos SQL Server y Oracle",
+        "Monitoreo con Application Insights y Grafana",
+        "Control de calidad con Postman, Swagger y SonarCloud",
+        "Implementación de pipelines CI/CD con Azure DevOps",
+        "Aplicación de metodologías ágiles (Scrum, Agile) y liderazgo técnico"
+      ],
+      "currentWork": "Tengo experiencia en la creación y consumo de API REST aplicando buenas prácticas de seguridad, manejo de errores y monitoreo con Application Insights y Grafana. Domino herramientas como Postman, Swagger y SonarCloud, y trabajo con bases de datos SQL Server y Oracle. He liderado y colaborado en equipos ágiles, participando en todas las fases del desarrollo: análisis, documentación, estimación, codificación, pruebas y despliegue, siempre enfocado en la calidad y el valor para el cliente."
+    },
+    "education": [
+      {
+        "degree": "Ingeniero en Sistemas",
+        "institution": "Universidad Cooperativa de Colombia",
+        "year": "2021"
+      }
+    ],
+    "skills": {
+      "frontend": [
+        { "name": "Angular", "icon": "🅰️", "url": "https://angular.io/docs" },
+        { "name": "React", "icon": "⚛️", "url": "https://reactjs.org/docs/getting-started.html" },
+        { "name": "Next.js", "icon": "▲", "url": "https://nextjs.org/docs" },
+        { "name": "JavaScript", "icon": "JS", "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript" },
+        { "name": "TypeScript", "icon": "TS", "url": "https://www.typescriptlang.org/docs/" },
+        { "name": "HTML", "icon": "🌐", "url": "https://developer.mozilla.org/en-US/docs/Web/HTML" },
+        { "name": "CSS", "icon": "🎨", "url": "https://developer.mozilla.org/en-US/docs/Web/CSS" },
+        { "name": "TailwindCSS", "icon": "💨", "url": "https://tailwindcss.com/docs" }
+      ],
+      "backend": [
+        { "name": "C#", "icon": "C#", "url": "https://learn.microsoft.com/en-us/dotnet/csharp/" },
+        { "name": ".NET", "icon": ".NET", "url": "https://learn.microsoft.com/en-us/dotnet/" },
+        { "name": ".NET Core", "icon": "⚡", "url": "https://learn.microsoft.com/en-us/dotnet/core/introduction" },
+        { "name": "Node.js", "icon": "🟢", "url": "https://nodejs.org/en/docs" },
+        { "name": "ASP.NET Web API", "icon": "🌐", "url": "https://learn.microsoft.com/en-us/aspnet/web-api/" },
+        { "name": "Entity Framework", "icon": "🗃️", "url": "https://learn.microsoft.com/en-us/ef/" }
+      ],
+      "database": [
+        { "name": "SQL Server", "icon": "🗄️", "url": "https://learn.microsoft.com/en-us/sql/sql-server/" },
+        { "name": "Oracle", "icon": "🔴", "url": "https://docs.oracle.com/en/database/" },
+        { "name": "MySQL", "icon": "🐬", "url": "https://dev.mysql.com/doc/" },
+        { "name": "PostgreSQL", "icon": "🐘", "url": "https://www.postgresql.org/docs/" },
+        { "name": "Firebase", "icon": "🔥", "url": "https://firebase.google.com/docs" },
+        { "name": "Cosmos DB", "icon": "☁️", "url": "https://learn.microsoft.com/en-us/azure/cosmos-db/introduction" }
+      ],
+      "cloud": [
+        { "name": "Azure DevOps", "icon": "☁️", "url": "https://learn.microsoft.com/en-us/azure/devops/" },
+        { "name": "Vercel", "icon": "▲", "url": "https://vercel.com/docs" },
+        { "name": "GitHub Pages", "icon": "🐙", "url": "https://docs.github.com/en/pages" }
+      ]
+    },
+    "projects": [
+      {
+        "title": "Marketing Page",
+        "description": "Este proyecto involucra la construcción de una landing page usando React y Next.js, incorporando las librerías Calendly y Mailchimp para funcionalidades de programación de citas y marketing por email.",
+        "image": "/assets/images/project1.jpg",
+        "technologies": ["React", "Next.js", "Calendly", "Mailchimp"],
+        "link": "#"
+      }
+    ],
+    "contact": {
+      "title": "Conecta conmigo",
+      "social": [
+        { "name": "GitHub", "icon": "github", "url": "https://github.com/SMPages" },
+        { "name": "LinkedIn", "icon": "linkedin", "url": "https://www.linkedin.com/in/sebastian-marciales/" },
+        { "name": "Email", "icon": "mail", "url": "mailto:Dev-Sebas@outlook.com" },
+        { "name": "WhatsApp", "icon": "whatsapp", "url": "https://wa.me/573228969215?text=Hola%20Sebastián%2C%20vi%20tu%20portafolio%20y%20me%20interesa%20contactarte" }
+      ]
+    }
+  },
+  "services": {
+    "title": "Portal de Servicios",
+    "url": "https://wa.me/573228969215?text=Hola%2C%20estoy%20interesado%20en%20tus%20servicios%20de%20desarrollo%20web",
+    "description": "Servicios profesionales de desarrollo de software",
+    "offerings": [
+      {
+        "title": "Sitios Web Personalizados",
+        "description": "Diseño y desarrollo de sitios web modernos y responsivos para negocios, marcas personales o emprendimientos.",
+        "features": [
+          "Diseño adaptable a móviles",
+          "Optimización SEO básica",
+          "Integración con redes sociales",
+          "Carga rápida y segura"
+        ]
+      },
+      {
+        "title": "Landing Pages de servicios",
+        "description": "Páginas de aterrizaje enfocadas en la conversión, ideales para campañas de marketing, productos o servicios.",
+        "features": [
+          "Diseño centrado en objetivos",
+          "Formulario de contacto o WhatsApp",
+          "Botones CTA personalizados",
+          "Optimización para anuncios"
+        ]
+      },
+      {
+        "title": "Bases de Datos a Medida",
+        "description": "Diseño y creación de bases de datos adaptadas a las necesidades de tu negocio, listas para escalar.",
+        "features": [
+          "Modelado de datos eficiente",
+          "Conexión con APIs o formularios web",
+          "SQL Server / MySQL / Firebase",
+          "Control de acceso seguro"
+        ]
+      }
+    ]
+  }
+}
