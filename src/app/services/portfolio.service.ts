@@ -68,6 +68,6 @@ export class PortfolioService {
   constructor(private http: HttpClient) {}
 
   getPortfolioData(): Observable<PortfolioData> {
-    return this.http.get<PortfolioData>('/portfolio.json');
+    return this.http.get<PortfolioData>('portfolio.json');
   }
 }
