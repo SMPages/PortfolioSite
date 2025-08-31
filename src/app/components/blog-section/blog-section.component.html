@@ -1,0 +1,37 @@
+<section id="blog" class="blog-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Últimas Publicaciones</h2>
+      <p class="section-subtitle">
+        Comparto conocimientos sobre desarrollo, arquitectura y mejores prácticas
+      </p>
+    </div>
+
+    <div class="blog-grid">
+      <article class="blog-card" *ngFor="let post of blogPosts; let i = index">
+        <div class="blog-image">
+          <img [src]="post.image" [alt]="post.title" />
+          <span class="blog-category">{{ post.category }}</span>
+        </div>
+        <div class="blog-content">
+          <div class="blog-meta">
+            <i class="icon-calendar"></i>
+            <span>{{ post.date }}</span>
+            <span>•</span>
+            <span>{{ post.readTime }} lectura</span>
+          </div>
+          <h3 class="blog-title">{{ post.title }}</h3>
+          <p class="blog-description">{{ post.description }}</p>
+          <a href="#" class="blog-link">
+            Leer más
+            <i class="icon-arrow-right"></i>
+          </a>
+        </div>
+      </article>
+    </div>
+
+    <div class="section-cta">
+      <button class="btn btn-outline-secondary">Leer todos los artículos</button>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,61 @@
+<section id="inicio" class="hero-section">
+  <div class="container">
+    <div class="hero-content">
+
+      <!-- Profile Image -->
+      <div class="profile-image animate-fade-in">
+        <!-- Coloca la imagen en: src/public/images/profile.jpg -->
+        <img
+          src="/profile.png"
+          alt="Foto de perfil"
+          class="profile-photo"
+          width="128"
+          height="128"
+          loading="eager"
+        />
+      </div>
+
+      <!-- Main Heading -->
+      <h1 class="hero-title animate-fade-in-up text-balance">
+        Construyo soluciones digitales <span class="text-primary">escalables</span> y de
+        <span class="text-secondary">alta calidad</span> en .NET y Angular
+      </h1>
+
+      <!-- Subtitle -->
+      <p class="hero-subtitle animate-fade-in-up text-pretty">
+        Más de 3 años de experiencia ayudando empresas a transformar procesos con software eficiente
+      </p>
+
+      <!-- CTA Buttons -->
+      <div class="cta-buttons animate-fade-in-up">
+        <a href="#contacto" (click)="scrollToSection('contacto')" class="btn-primary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          Agenda una reunión
+        </a>
+        <a href="#proyectos" (click)="scrollToSection('proyectos')" class="btn-secondary">
+          Ver proyectos
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12,5 19,12 12,19"></polyline>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Tech Stack -->
+      <div class="tech-stack animate-fade-in">
+        <p class="tech-label">Tecnologías principales</p>
+        <div class="tech-items">
+          <span *ngFor="let tech of techStack" class="tech-item">
+            {{ tech }}
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

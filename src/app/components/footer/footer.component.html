@@ -1,0 +1,51 @@
+<footer class="footer">
+  <div class="container">
+    <div class="footer-content">
+      <!-- Logo and Description -->
+      <div class="footer-section">
+        <h3 class="footer-logo">DevSebas</h3>
+        <p class="footer-description">
+          Desarrollador especializado en .NET y Angular, creando soluciones digitales escalables para empresas.
+        </p>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="footer-section">
+        <h4 class="footer-title">Enlaces rápidos</h4>
+        <nav class="footer-nav">
+          <a *ngFor="let link of navLinks" [href]="link.href" class="footer-link">
+            {{ link.label }}
+          </a>
+        </nav>
+      </div>
+
+      <!-- Social Links -->
+      <div class="footer-section">
+        <h4 class="footer-title">Sígueme</h4>
+        <div class="social-links">
+          <a
+            href="https://linkedin.com/in/devsebas"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="social-link"
+          >
+            <i class="icon-linkedin"></i>
+          </a>
+          <a
+            href="https://github.com/devsebas"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="social-link"
+          >
+            <i class="icon-github"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Copyright -->
+    <div class="footer-bottom">
+      <p class="copyright">© {{ currentYear }} DevSebas. Todos los derechos reservados.</p>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,107 @@
+<section id="contacto" class="contact-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Hablemos de tu proyecto</h2>
+      <p class="section-subtitle">
+        ¿Tienes una idea? Conversemos sobre cómo puedo ayudarte a hacerla realidad
+      </p>
+    </div>
+
+    <div class="contact-grid">
+      <!-- Contact Form -->
+      <div class="contact-form-card">
+        <div class="card-header">
+          <h3 class="card-title">Envíame un mensaje</h3>
+          <p class="card-description">Completa el formulario y te responderé en menos de 24 horas</p>
+        </div>
+        <form (ngSubmit)="onSubmit()" class="contact-form">
+          <div class="form-group">
+            <label for="name">Nombre completo</label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              placeholder="Tu nombre"
+              [(ngModel)]="formData.name"
+              required
+              class="form-input"
+            />
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="tu@email.com"
+              [(ngModel)]="formData.email"
+              required
+              class="form-input"
+            />
+          </div>
+          <div class="form-group">
+            <label for="message">Mensaje</label>
+            <textarea
+              id="message"
+              name="message"
+              placeholder="Cuéntame sobre tu proyecto..."
+              rows="5"
+              [(ngModel)]="formData.message"
+              required
+              class="form-textarea"
+            ></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-full">
+            Enviar mensaje
+          </button>
+        </form>
+      </div>
+
+      <!-- Contact Info -->
+      <div class="contact-info">
+        <div class="contact-card">
+          <div class="contact-header">
+            <div class="contact-icon">
+              <i class="icon-message-square"></i>
+            </div>
+            <div class="contact-details">
+              <h4>WhatsApp</h4>
+              <p>Respuesta inmediata</p>
+            </div>
+          </div>
+          <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-full">
+            Escribir por WhatsApp
+          </a>
+        </div>
+
+        <div class="contact-card">
+          <div class="contact-header">
+            <div class="contact-icon">
+              <i class="icon-mail"></i>
+            </div>
+            <div class="contact-details">
+              <h4>Email</h4>
+              <a href="mailto:Dev-Sebas&#64;outlook.com">Dev-Sebas&#64;outlook.com</a>
+            </div>
+          </div>
+          <a href="mailto:Dev-Sebas&#64;outlook.com" class="btn btn-outline-secondary btn-full">
+            Enviar email
+          </a>
+        </div>
+
+        <!-- Social Links -->
+        <div class="social-section">
+          <h4>Sígueme en redes</h4>
+          <div class="social-links">
+            <a href="https://linkedin.com/in/devsebas" target="_blank" rel="noopener noreferrer" class="social-link">
+              <i class="icon-linkedin"></i>
+            </a>
+            <a href="https://github.com/devsebas" target="_blank" rel="noopener noreferrer" class="social-link">
+              <i class="icon-github"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

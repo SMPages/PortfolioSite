@@ -1,0 +1,49 @@
+<header [class]="'header ' + (isScrolled ? 'scrolled' : '')">
+  <nav class="nav">
+    <div class="container">
+      <div class="nav-content">
+        <!-- Logo -->
+        <div class="logo">
+          <a href="#inicio" (click)="scrollToSection('inicio')" class="logo-link">
+            <img
+              src="/logo.png"
+              alt="DevSebas"
+              class="logo-img"
+              width="36"
+              height="36"
+              loading="eager"
+            />
+            <!-- <span class="logo-text">DevSebas</span> -->
+          </a>
+        </div>
+
+        <!-- Desktop Navigation -->
+        <div class="nav-links desktop-nav">
+          <a href="#inicio" (click)="scrollToSection('inicio')">Inicio</a>
+          <a href="#servicios" (click)="scrollToSection('servicios')">Servicios</a>
+          <a href="#proyectos" (click)="scrollToSection('proyectos')">Proyectos</a>
+          <a href="#testimonios" (click)="scrollToSection('testimonios')">Testimonios</a>
+          <a href="#blog" (click)="scrollToSection('blog')">Blog</a>
+          <a href="#contacto" (click)="scrollToSection('contacto')" class="btn-primary">Contacto</a>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <button class="mobile-menu-btn" (click)="toggleMobileMenu()" [attr.aria-expanded]="isMobileMenuOpen">
+          <span class="hamburger-line" [class.active]="isMobileMenuOpen"></span>
+          <span class="hamburger-line" [class.active]="isMobileMenuOpen"></span>
+          <span class="hamburger-line" [class.active]="isMobileMenuOpen"></span>
+        </button>
+      </div>
+
+      <!-- Mobile Navigation -->
+      <div class="mobile-nav" [class.open]="isMobileMenuOpen">
+        <a href="#inicio" (click)="scrollToSection('inicio')">Inicio</a>
+        <a href="#servicios" (click)="scrollToSection('servicios')">Servicios</a>
+        <a href="#proyectos" (click)="scrollToSection('proyectos')">Proyectos</a>
+        <a href="#testimonios" (click)="scrollToSection('testimonios')">Testimonios</a>
+        <a href="#blog" (click)="scrollToSection('blog')">Blog</a>
+        <a href="#contacto" (click)="scrollToSection('contacto')" class="btn-primary">Contacto</a>
+      </div>
+    </div>
+  </nav>
+</header>

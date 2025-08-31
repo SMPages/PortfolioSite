@@ -1,0 +1,123 @@
+@use '../../../styles.scss' as *; // variables + mixins
+// @use 'sass:color';
+
+.header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+
+  &.scrolled {
+    background-color: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.nav {
+  padding: 1rem 0;
+
+  .container {
+    @include container;
+  }
+}
+
+.nav-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  .logo-text {
+    font-family: $font-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: $primary-color;
+    text-decoration: none;
+  }
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+
+  a {
+    text-decoration: none;
+    color: $foreground-color;
+    font-weight: 500;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: $primary-color;
+    }
+  }
+}
+
+.desktop-nav {
+  @media (max-width: $breakpoint-md) {
+    display: none;
+  }
+}
+
+.mobile-menu-btn {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+
+  @media (max-width: $breakpoint-md) {
+    display: flex;
+  }
+
+  .hamburger-line {
+    width: 24px;
+    height: 2px;
+    background-color: $foreground-color;
+    transition: all 0.3s ease;
+  }
+
+  /* Estado activo aplicado en el botón */
+  &.active {
+    .hamburger-line:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); }
+    .hamburger-line:nth-child(2) { opacity: 0; }
+    .hamburger-line:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
+  }
+}
+
+.mobile-nav {
+  display: none;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-top: 1px solid $border-color;
+  margin-top: 1rem;
+
+  @media (max-width: $breakpoint-md) {
+    display: flex;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+
+    &.open {
+      max-height: 300px;
+    }
+  }
+
+  a {
+    text-decoration: none;
+    color: $foreground-color;
+    font-weight: 500;
+    padding: 0.5rem 0;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: $primary-color;
+    }
+  }
+}

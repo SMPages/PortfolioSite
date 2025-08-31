@@ -1,0 +1,32 @@
+<section id="servicios" class="services-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Servicios de Desarrollo</h2>
+      <p class="section-subtitle">
+        Soluciones tecnológicas completas para impulsar tu negocio
+      </p>
+    </div>
+
+    <div class="services-grid">
+      <div class="service-card" *ngFor="let service of services; let i = index">
+        <div class="service-header">
+          <div class="service-icon">
+            <i class="icon-{{ service.icon }}"></i>
+          </div>
+          <h3 class="service-title">{{ service.title }}</h3>
+        </div>
+        <p class="service-description">{{ service.description }}</p>
+        <ul class="service-features">
+          <li *ngFor="let feature of service.features" class="feature-item">
+            <span class="feature-dot"></span>
+            {{ feature }}
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-cta">
+      <a href="#contacto" class="btn btn-secondary">Solicita una cotización</a>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,45 @@
+<section id="testimonios" class="testimonials-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Lo que dicen mis clientes</h2>
+      <p class="section-subtitle">
+        Testimonios de empresas que han confiado en mis servicios
+      </p>
+    </div>
+
+    <div class="testimonial-container">
+      <div class="testimonial-card">
+        <div class="testimonial-content">
+          <!-- Stars -->
+          <div class="stars">
+            <i class="icon-star" *ngFor="let star of getStarsArray(testimonials[currentIndex].rating)"></i>
+          </div>
+
+          <!-- Testimonial Content -->
+          <blockquote class="testimonial-text">
+            "{{ testimonials[currentIndex].content }}"
+          </blockquote>
+
+          <!-- Author -->
+          <div class="testimonial-author">
+            <img [src]="testimonials[currentIndex].avatar" [alt]="testimonials[currentIndex].name" class="author-avatar" />
+            <div class="author-info">
+              <div class="author-name">{{ testimonials[currentIndex].name }}</div>
+              <div class="author-position">{{ testimonials[currentIndex].position }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Indicators -->
+      <div class="testimonial-indicators">
+        <button
+          *ngFor="let testimonial of testimonials; let i = index"
+          class="indicator"
+          [class.active]="i === currentIndex"
+          (click)="setCurrentIndex(i)"
+        ></button>
+      </div>
+    </div>
+  </div>
+</section>

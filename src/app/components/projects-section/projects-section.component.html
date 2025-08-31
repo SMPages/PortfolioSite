@@ -1,0 +1,39 @@
+<section id="proyectos" class="projects-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Proyectos Destacados</h2>
+      <p class="section-subtitle">
+        Algunos de los proyectos que he desarrollado para empresas y clientes
+      </p>
+    </div>
+
+    <div class="projects-grid">
+      <div class="project-card" *ngFor="let project of projects; let i = index">
+        <div class="project-image">
+          <img [src]="project.image" [alt]="project.title" />
+        </div>
+        <div class="project-content">
+          <h3 class="project-title">{{ project.title }}</h3>
+          <p class="project-description">{{ project.description }}</p>
+          <div class="project-technologies">
+            <span class="tech-badge" *ngFor="let tech of project.technologies">{{ tech }}</span>
+          </div>
+          <div class="project-actions">
+            <a [href]="project.demoUrl" class="btn btn-outline">
+              <i class="icon-external-link"></i>
+              Demo
+            </a>
+            <a [href]="project.githubUrl" class="btn btn-outline">
+              <i class="icon-github"></i>
+              Código
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-cta">
+      <button class="btn btn-outline-primary">Ver más proyectos</button>
+    </div>
+  </div>
+</section>

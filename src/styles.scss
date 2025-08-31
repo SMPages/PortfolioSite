@@ -1,65 +1,206 @@
-/* Global Styles */
+@use "sass:map";
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@400;500;600&display=swap');
+
+// Color variables - sage green and terracotta theme
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.2 0 0);
+  --card: oklch(0.98 0 0);
+  --card-foreground: oklch(0.2 0 0);
+  --primary: oklch(0.7 0.05 120); // Sage green
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.75 0.08 45); // Terracotta
+  --secondary-foreground: oklch(0.2 0 0);
+  --muted: oklch(0.88 0 0);
+  --muted-foreground: oklch(0.5 0 0);
+  --accent: oklch(0.75 0.08 45);
+  --accent-foreground: oklch(0.2 0 0);
+  --border: oklch(0.85 0 0);
+  --ring: oklch(0.7 0.05 120);
+}
+
+// SCSS Variables
+$primary-color: var(--primary);
+$secondary-color: var(--secondary);
+$background-color: var(--background);
+$foreground-color: var(--foreground);
+$muted-color: var(--muted);
+$muted-foreground-color: var(--muted-foreground);
+$border-color: var(--border);
+
+// Typography
+$font-sans: 'Inter', sans-serif;
+$font-serif: 'Playfair Display', serif;
+
+// Breakpoints
+$breakpoint-sm: 600px;
+$breakpoint-md: 900px;
+$breakpoint-lg: 1200px;
+
+// Mixins
+@mixin container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  
+  @media (min-width: $breakpoint-sm) {
+    padding: 0 1.5rem;
+  }
+  
+  @media (min-width: $breakpoint-lg) {
+    padding: 0 2rem;
+  }
+}
+
+@mixin button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+  font-family: $font-sans;
+}
+
+@mixin button-primary {
+  @include button-base;
+  background-color: $primary-color;
+  color: var(--primary-foreground);
+  
+  &:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+}
+
+@mixin button-secondary {
+  @include button-base;
+  background-color: transparent;
+  color: $secondary-color;
+  border: 1px solid $secondary-color;
+  
+  &:hover {
+    background-color: $secondary-color;
+    color: var(--secondary-foreground);
+  }
+}
+
+@mixin fade-in-up {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+@mixin fade-in {
+  opacity: 0;
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+// Global styles
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: $font-sans;
+  background-color: $background-color;
+  color: $foreground-color;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #111827;
-  color: white;
 }
 
-html, body {
-  height: 100%;
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #1f2937;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #6b46c1;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #7c3aed;
-}
-
-/* Utility classes */
-.gradient-text {
-  background: linear-gradient(to right, #a78bfa, #f472b6);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Responsive utilities */
-@media (max-width: 640px) {
-  .container {
-    padding: 1rem;
+// Animations
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@media (min-width: 641px) and (max-width: 768px) {
-  .container {
-    padding: 1.5rem;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 
-@media (min-width: 769px) {
-  .container {
-    padding: 2rem;
+.animate-fade-in-up {
+  @include fade-in-up;
+}
+
+.animate-fade-in {
+  @include fade-in;
+}
+
+// Utility classes
+.container {
+  @include container;
+}
+
+.btn-primary {
+  @include button-primary;
+}
+
+.btn-secondary {
+  @include button-secondary;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.text-pretty {
+  text-wrap: pretty;
+}
+
+
+$breakpoints: (
+  xs: 0,
+  sm: 600px,
+  md: 900px,
+  lg: 1200px,
+  xl: 1536px
+);
+
+@mixin breakpoint($from, $to: null) {
+  $min: map.get($breakpoints, $from);
+
+  @if $min == null {
+    @error "Breakpoint `#{$from}` no existe. Usa: xs, sm, md, lg, xl";
+  }
+
+  @if $to == null {
+    @media (min-width: $min) {
+      @content;
+    }
+  } @else {
+    $max: map.get($breakpoints, $to);
+
+    @if $max == null {
+      @error "Breakpoint `#{$to}` no existe. Usa: xs, sm, md, lg, xl";
+    }
+
+    // pequeño ajuste para no solapar con el siguiente min-width
+    @media (min-width: $min) and (max-width: calc(#{$max} - 0.02px)) {
+      @content;
+    }
   }
 }
