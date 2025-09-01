@@ -1,6 +1,12 @@
-@use '../../../styles.scss' as *; // variables + mixins
-// @use 'sass:color';
+@use '../../../styles.scss' as *; // variables + mixins globales
 
+/* --- Paleta de marca (si no las tienes ya) --- */
+$ds-gold: #C7AE6A;
+$ds-old-gold: #b99a45;
+$ds-light-gold: #f1e7b0;
+$ds-sand: #d5c28f;
+
+/* ====== HEADER / CONTENEDORES ====== */
 .header {
   position: fixed;
   top: 0; left: 0; right: 0;
@@ -23,22 +29,71 @@
   }
 }
 
+/* Grid: logo | nav-centro | CTA */
 .nav-content {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
+  column-gap: 1rem;
+
+  > .logo { justify-self: start; }
+  > .nav-center { justify-self: center; }
+  > .cta-right { justify-self: end; }
 }
 
+/* ====== LOGO ====== */
 .logo {
-  .logo-text {
-    font-family: $font-serif;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: $primary-color;
-    text-decoration: none;
+  display: inline-flex;
+  align-items: baseline;
+  gap: clamp(.4rem, 1.5vw, .8rem);
+  line-height: 1;
+  text-decoration: none; // por si es <a>
+  cursor: pointer;
+
+  /* tamaño global del logo */
+  font-size: clamp(22px, 2.4vw, 40px);
+
+  /* tipografía: usa tu fuente del proyecto si existe */
+  font-family: $font-sans, $font-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  .logo__symbol,
+  .logo__text {
+    font-weight: 800;
+    letter-spacing: .04em;
+
+    /* degradado dorado */
+    background: linear-gradient(
+      90deg,
+      $ds-gold 0%,
+      $ds-sand 28%,
+      $ds-light-gold 50%,
+      $ds-old-gold 78%,
+      #8a6832 100%
+    );
+    -webkit-background-clip: text;
+            background-clip: text;
+    color: transparent;
+
+    /* micro realce para fondos claros */
+    text-shadow: 0 0 .01em rgba(0,0,0,.08);
+  }
+
+  .logo__symbol {
+    font-weight: 700;        // un poco más fino que el texto
+    letter-spacing: .06em;   // aire entre < / >
+  }
+
+  /* Fallback si no hay soporte de background-clip:text */
+  @supports not (-webkit-background-clip: text) {
+    .logo__symbol, .logo__text {
+      color: $ds-gold;
+      background: none;
+      text-shadow: none;
+    }
   }
 }
 
+/* ====== NAV LINKS ====== */
 .nav-links {
   display: flex;
   align-items: center;
@@ -56,6 +111,13 @@
   }
 }
 
+/* CTA derecha */
+.cta-right .btn-primary {
+  padding: .6rem 1rem;
+  border-radius: .6rem;
+}
+
+/* ====== RESPONSIVE ====== */
 .desktop-nav {
   @media (max-width: $breakpoint-md) {
     display: none;
@@ -73,6 +135,8 @@
 
   @media (max-width: $breakpoint-md) {
     display: flex;
+    justify-self: end; /* se queda a la derecha en mobile */
+    grid-column: 2 / span 1; /* en mobile hay 2 columnas (ver abajo) */
   }
 
   .hamburger-line {
@@ -80,16 +144,22 @@
     height: 2px;
     background-color: $foreground-color;
     transition: all 0.3s ease;
-  }
 
-  /* Estado activo aplicado en el botón */
-  &.active {
-    .hamburger-line:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); }
-    .hamburger-line:nth-child(2) { opacity: 0; }
-    .hamburger-line:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
+    /* animación cuando isMobileMenuOpen = true  */
+    &.active:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); }
+    &.active:nth-child(2) { opacity: 0; }
+    &.active:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
   }
 }
 
+/* Mobile: 2 columnas (logo | botón) */
+@media (max-width: $breakpoint-md) {
+  .nav-content {
+    grid-template-columns: 1fr auto;
+  }
+}
+
+/* ====== MOBILE NAV ====== */
 .mobile-nav {
   display: none;
   flex-direction: column;
@@ -104,9 +174,7 @@
     overflow: hidden;
     transition: max-height 0.3s ease;
 
-    &.open {
-      max-height: 300px;
-    }
+    &.open { max-height: 320px; } // acordeón abierto
   }
 
   a {
@@ -116,8 +184,6 @@
     padding: 0.5rem 0;
     transition: color 0.2s ease;
 
-    &:hover {
-      color: $primary-color;
-    }
+    &:hover { color: $primary-color; }
   }
 }

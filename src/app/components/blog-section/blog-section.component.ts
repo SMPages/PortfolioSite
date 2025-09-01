@@ -1,32 +1,33 @@
-import { Component } from "@angular/core"
-import { CommonModule } from "@angular/common"
+import { Component } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { Router, RouterModule } from "@angular/router";
 
 interface BlogPost {
-  title: string
-  description: string
-  date: string
-  readTime: string
-  category: string
-  image: string
-  slug: string
+  title: string;
+  description: string;
+  date: string;
+  readTime: string;
+  category: string;
+  image: string;
+  slug: string;
 }
 
 @Component({
   selector: "app-blog-section",
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: "./blog-section.component.html",
   styleUrls: ["./blog-section.component.scss"],
 })
 export class BlogSectionComponent {
-  blogPosts: BlogPost[] = [
+  private allPosts: BlogPost[] = [
     {
       title: "Implementando Clean Architecture en .NET",
       description: "Guía completa para estructurar proyectos .NET siguiendo los principios de arquitectura limpia.",
       date: "15 Enero 2025",
       readTime: "8 min",
       category: "Arquitectura",
-      image: "/images/clean-architecture-diagram-dotnet.png",
+      image: "/blog/clean-architecture-diagram-dotnet.png",
       slug: "clean-architecture-dotnet",
     },
     {
@@ -35,7 +36,7 @@ export class BlogSectionComponent {
       date: "10 Enero 2025",
       readTime: "6 min",
       category: "Angular",
-      image: "/images/angular-signals-reactive-programming.png",
+      image: "/blog/angular-signals-reactividad_card.png",
       slug: "angular-signals-reactividad",
     },
     {
@@ -44,8 +45,34 @@ export class BlogSectionComponent {
       date: "5 Enero 2025",
       readTime: "12 min",
       category: "Microservicios",
-      image: "/images/microservices-architecture-docker-containers.png",
+      image: "/blog/microservices-architecture-docker-containers.png",
       slug: "microservicios-dotnet-docker",
     },
-  ]
+  ];
+
+  pageSize: number = 3;
+  visiblePosts: BlogPost[] = [];
+
+  constructor(private router: Router) {
+    this.visiblePosts = this.allPosts.slice(0, this.pageSize);
+  }
+
+  get hasMore(): boolean {
+    return this.visiblePosts.length < this.allPosts.length;
+  }
+
+  loadMore(): void {
+    const next = this.visiblePosts.length + this.pageSize;
+    this.visiblePosts = this.allPosts.slice(0, next);
+  }
+
+  // Fallback por si algún overlay de CSS bloquea el clic en routerLink
+  goTo(slug: string): void {
+    void this.router.navigate(["/blog", slug]);
+  }
+
+  // trackBy para evitar recrear cards innecesariamente
+  trackBySlug(index: number, post: BlogPost): string {
+    return post.slug;
+  }
 }

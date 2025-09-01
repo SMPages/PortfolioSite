@@ -1,0 +1,22 @@
+<app-header></app-header>
+<section class="blog-list-page container">
+  <div class="title-bar">
+    <a routerLink="/blog" class="btn-back" aria-label="Volver al blog">
+      <i class="bi bi-arrow-left" aria-hidden="true"></i>
+      Volver al blog
+    </a>
+    <h1 class="page-title">Blog</h1>
+  </div>
+    <div class="grid">
+      <article *ngFor="let post of posts" class="card">
+        <a [routerLink]="['/blog', post.slug]">
+          <img [src]="post.image" [alt]="post.title" loading="lazy" />
+        </a>
+        <h2><a [routerLink]="['/blog', post.slug]">{{post.title}}</a></h2>
+        <p class="meta">{{post.date}} • {{post.readTime}}</p>
+        <p class="desc">{{post.description}}</p>
+        <a class="btn" [routerLink]="['/blog', post.slug]">Leer más</a>
+      </article>
+    </div>
+  </section>
+  <app-footer></app-footer>

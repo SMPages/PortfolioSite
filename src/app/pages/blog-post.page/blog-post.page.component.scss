@@ -1,0 +1,128 @@
+@use '../../../styles.scss' as *;
+
+/* ====== ÁREA DE ARTÍCULO ====== */
+.blog-article .cover {
+  display: block;
+  width: 100%;
+  max-width: 880px;   /* ajusta al gusto */
+  margin: 1rem auto 1.5rem;  /* ← centrada */
+  border-radius: .9rem;
+  box-shadow: 0 10px 28px -14px rgba(0,0,0,.18);
+  object-fit: cover;
+}
+.blog-article {
+      margin-top: 90px;
+  /* === Contenido HTML inyectado === */
+  .content {
+    color: var(--foreground);
+    font-size: 1.05rem;
+    line-height: 1.8;
+    text-wrap: pretty;
+    /* Si YA muestras un <h1> externo, oculta el del HTML inyectado: */
+    /* h1:first-of-type { display: none; } */
+
+    h1 {
+      font-family: $font-serif;
+      font-weight: 800;
+      font-size: 1.75rem;
+      line-height: 1.2;
+      margin: 0 0 1rem;
+      color: var(--card-foreground);
+      text-align: center;
+      @include breakpoint(md){ font-size: 2.1rem; }
+    }
+
+    h2, h3 {
+      font-family: $font-serif;
+      font-weight: 800;
+      line-height: 1.2;
+      color: var(--card-foreground);
+      margin: 2rem 0 .75rem;
+      text-wrap: balance;
+      position: relative;
+
+      &::after {
+        content: "";
+        display: block;
+        height: 2px;
+        width: 56px;
+        margin-top: .5rem;
+        background: linear-gradient(90deg, var(--primary), transparent);
+        border-radius: 999px;
+      }
+    }
+
+    p { margin: 0 0 1.1rem; }
+
+    hr {
+      border: 0; height: 1px; margin: 1.5rem 0;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+    }
+
+    ul, ol {
+      margin: 0 0 1.2rem 1.25rem; padding: 0;
+      li { margin: .4rem 0; &::marker { color: var(--secondary); } }
+    }
+
+    /* Bloques de código */
+    pre {
+      position: relative;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: .9rem;
+      padding: 1rem 1.1rem;
+      overflow: auto;
+      box-shadow: 0 12px 32px -16px rgba(0,0,0,.12);
+      margin: 1.25rem 0;
+
+      code {
+        display: block;
+        white-space: pre; /* respeta ASCII/diagramas */
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+        font-size: .95rem;
+        line-height: 1.65;
+        color: var(--foreground);
+        background: transparent;
+      }
+    }
+    /* Etiqueta de lenguaje */
+    pre code.language-csharp::before {
+      content: "C#";
+      position: absolute; top: .5rem; right: .5rem;
+      font-size: .75rem; font-weight: 700;
+      padding: .2rem .45rem; border-radius: .4rem;
+      color: var(--primary-foreground); background: var(--primary);
+    }
+
+    /* Código inline */
+    code:not([class]) {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: .95em;
+      background: color-mix(in oklab, var(--muted) 92%, #000 8%);
+      padding: .12rem .35rem;
+      border-radius: .35rem;
+      border: 1px solid var(--border);
+    }
+
+    /* Imágenes dentro del artículo */
+    img {
+      display: block; max-width: 100%; height: auto;
+      border-radius: .75rem; margin: 1rem 0 1.25rem;
+      box-shadow: 0 10px 28px -14px rgba(0,0,0,.18);
+    }
+
+    blockquote {
+      margin: 1.5rem 0; padding: 1rem 1.1rem;
+      border-left: 4px solid var(--primary);
+      background: var(--muted); color: var(--card-foreground);
+      border-radius: .6rem;
+    }
+
+    table {
+      width: 100%; border-collapse: collapse; margin: 1.25rem 0; font-size: .95rem;
+      th, td { border: 1px solid var(--border); padding: .6rem .75rem; vertical-align: top; }
+      th { background: var(--muted); color: var(--card-foreground); text-align: left; font-weight: 700; }
+      tr:hover td { background: color-mix(in oklab, var(--muted) 85%, #000 15%); }
+    }
+  }
+}

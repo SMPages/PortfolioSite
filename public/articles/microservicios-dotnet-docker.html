@@ -1,0 +1,381 @@
+<h1>Microservicios con .NET y Docker</h1>
+
+<p><strong>TL;DR</strong>: Divide tu solución en servicios pequeños y autónomos (bounded contexts) con <em>base de datos por servicio</em>, comunícalos por HTTP/gRPC y mensajería (RabbitMQ), publícalos como <em>contenedores</em> y orquéstralos con <code>docker-compose</code> (o Kubernetes). Gana despliegues independientes, escalado selectivo y resiliencia. Usa <em>OpenTelemetry</em> para observabilidad y un <em>API Gateway</em> para enrutar y proteger.</p>
+
+<hr>
+
+<h2>¿Cuándo (no) usar microservicios?</h2>
+<ul>
+  <li><strong>Úsalos</strong> si necesitas <em>equipos autónomos</em>, despliegues independientes, escalado desigual (por ejemplo, <em>Orders</em> escala mucho más que <em>Catalog</em>), o si el dominio es amplio con límites claros.</li>
+  <li><strong>No los uses aún</strong> si tu producto es pequeño, el equipo es de 1–3 personas o no tienes capacidad para monitoreo, CI/CD y <em>DevOps</em>. Empieza como monolito modular y extrae servicios cuando el dolor lo justifique.</li>
+</ul>
+
+<hr>
+
+<h2>Arquitectura de referencia</h2>
+
+<pre><code>┌──────────────────────────┐
+│        API Gateway       │  (YARP / Nginx)
+└─────────────┬────────────┘
+              │
+  ┌───────────┴───────────┐
+  │                       │
+┌─▼────────────────┐  ┌───▼───────────────┐
+│ Catalog Service  │  │ Orders Service    │  (HTTP/gRPC + Mensajería)
+│ .NET 8 Minimal   │  │ .NET 8 Minimal    │
+└─┬───────────────┬┘  └───┬───────────────┘
+  │               │       │
+  │               │       │
+┌─▼─┐           ┌─▼─┐   ┌─▼─┐
+│DB │           │Cache│  │MQ │  (PostgreSQL / Redis / RabbitMQ)
+└───┘           └────┘   └───┘
+
+Observabilidad: OpenTelemetry → Jaeger/OTLP • Logging: Serilog/Seq
+</code></pre>
+
+<p><strong>Reglas de oro</strong>: 1) <em>Bounded contexts</em> bien definidos; 2) <em>Base de datos por servicio</em>; 3) Comunicación síncrona (HTTP/gRPC) para consultas &amp; comandos simples y <em>eventos asíncronos</em> (RabbitMQ/Kafka) para integración y consistencia eventual.</p>
+
+<hr>
+
+<h2>Estructura de carpetas sugerida</h2>
+
+<pre><code>src/
+  services/
+    catalog/
+      Catalog.Api/
+      Catalog.Application/
+      Catalog.Domain/
+      Catalog.Infrastructure/
+    orders/
+      Orders.Api/
+      Orders.Application/
+      Orders.Domain/
+      Orders.Infrastructure/
+  gateway/
+    Yarp.Gateway/
+  building-blocks/
+    Messaging.Abstractions/   (IEventBus, IntegrationEvent)
+    Observability/
+  docker/
+    docker-compose.yml
+</code></pre>
+
+<hr>
+
+<h2>1) Catálogo: Minimal API en .NET 8</h2>
+<p>Un endpoint de ejemplo. Observa que el dominio no conoce EF ni HTTP.</p>
+
+<pre><code class="language-csharp">// Catalog.Domain/Entities/Product.cs
+namespace Catalog.Domain.Entities;
+
+public sealed class Product
+{
+    public Guid Id { get; private set; } = Guid.NewGuid();
+    public string Name { get; private set; } = string.Empty;
+    public decimal Price { get; private set; }
+
+    public Product(string name, decimal price)
+    {
+        if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Name required.");
+        if (price &lt;= 0) throw new ArgumentException("Price must be &gt; 0");
+        Name = name.Trim();
+        Price = price;
+    }
+}
+</code></pre>
+
+<pre><code class="language-csharp">// Catalog.Infrastructure/Persistence/AppDbContext.cs
+using Catalog.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+
+namespace Catalog.Infrastructure.Persistence;
+
+public sealed class AppDbContext : DbContext
+{
+    public AppDbContext(DbContextOptions&lt;AppDbContext&gt; opt) : base(opt) { }
+    public DbSet&lt;Product&gt; Products =&gt; Set&lt;Product&gt;();
+
+    protected override void OnModelCreating(ModelBuilder model)
+    {
+        model.Entity&lt;Product&gt;(b =&gt; {
+            b.HasKey(p =&gt; p.Id);
+            b.Property(p =&gt; p.Name).HasMaxLength(120).IsRequired();
+            b.Property(p =&gt; p.Price).HasColumnType("numeric(18,2)");
+        });
+    }
+}
+</code></pre>
+
+<pre><code class="language-csharp">// Catalog.Api/Program.cs
+using Catalog.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext&lt;AppDbContext&gt;(opt =&gt;
+    opt.UseNpgsql(builder.Configuration.GetConnectionString("CatalogDb")));
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+var app = builder.Build();
+
+app.MapGet("/products", async (AppDbContext db) =&gt;
+    await db.Products.AsNoTracking().ToListAsync());
+
+app.MapPost("/products", async (AppDbContext db, ProductDto dto) =&gt;
+{
+    var p = new Catalog.Domain.Entities.Product(dto.Name, dto.Price);
+    db.Add(p);
+    await db.SaveChangesAsync();
+    return Results.Created($"/products/{p.Id}", new { p.Id });
+});
+
+app.UseSwagger();
+app.UseSwaggerUI();
+app.Run();
+
+record ProductDto(string Name, decimal Price);
+</code></pre>
+
+<hr>
+
+<h2>2) Dockerfile para .NET 8</h2>
+
+<pre><code class="language-docker"># Catalog.Api/Dockerfile
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+WORKDIR /app
+EXPOSE 8080
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+COPY ./Catalog.Api/*.csproj ./Catalog.Api/
+COPY ./Catalog.Infrastructure/*.csproj ./Catalog.Infrastructure/
+COPY ./Catalog.Domain/*.csproj ./Catalog.Domain/
+RUN dotnet restore ./Catalog.Api/Catalog.Api.csproj
+
+COPY . .
+RUN dotnet publish ./Catalog.Api/Catalog.Api.csproj -c Release -o /out /p:UseAppHost=false
+
+FROM base AS final
+WORKDIR /app
+COPY --from=build /out .
+ENTRYPOINT ["dotnet", "Catalog.Api.dll"]
+</code></pre>
+
+<hr>
+
+<h2>3) docker-compose para levantar todo</h2>
+<p>Incluye PostgreSQL, RabbitMQ, Jaeger (tracing) y un API Gateway con YARP.</p>
+
+<pre><code class="language-yaml"># docker/docker-compose.yml
+services:
+  catalog.api:
+    build: ../src/services/catalog/Catalog.Api
+    container_name: catalog.api
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__CatalogDb=Host=postgres;Database=catalog;Username=postgres;Password=postgres
+    depends_on: [postgres]
+    networks: [appnet]
+    ports: ["8081:8080"]
+
+  orders.api:
+    build: ../src/services/orders/Orders.Api
+    container_name: orders.api
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__OrdersDb=Host=postgres;Database=orders;Username=postgres;Password=postgres
+      - MessageBroker__Host=rabbitmq
+    depends_on: [postgres, rabbitmq]
+    networks: [appnet]
+    ports: ["8082:8080"]
+
+  gateway:
+    build: ../src/gateway/Yarp.Gateway
+    container_name: gateway
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+    depends_on: [catalog.api, orders.api]
+    networks: [appnet]
+    ports: ["8080:8080"]
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks: [appnet]
+    ports: ["5432:5432"]
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    networks: [appnet]
+    ports:
+      - "5672:5672"
+      - "15672:15672"   # consola web
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.57
+    container_name: jaeger
+    networks: [appnet]
+    ports:
+      - "16686:16686"   # UI
+
+volumes:
+  pgdata:
+
+networks:
+  appnet:
+</code></pre>
+
+<p><strong>Comandos</strong>:</p>
+<pre><code>docker compose -f docker/docker-compose.yml up --build
+# Swagger:
+#   Gateway proxy:     http://localhost:8080
+#   Catalog directo:   http://localhost:8081/swagger
+#   Orders directo:    http://localhost:8082/swagger
+# Consola RabbitMQ:    http://localhost:15672  (guest/guest)
+# Jaeger UI:           http://localhost:16686
+</code></pre>
+
+<hr>
+
+<h2>4) API Gateway con YARP</h2>
+
+<pre><code class="language-json">{
+  "ReverseProxy": {
+    "Routes": [
+      { "RouteId": "catalog", "ClusterId": "catalog", "Match": { "Path": "/catalog/{**catch-all}" } },
+      { "RouteId": "orders",  "ClusterId": "orders",  "Match": { "Path": "/orders/{**catch-all}"  } }
+    ],
+    "Clusters": {
+      "catalog": { "Destinations": { "d1": { "Address": "http://catalog.api:8080" } } },
+      "orders":  { "Destinations": { "d1": { "Address": "http://orders.api:8080"  } } }
+    }
+  }
+}
+</code></pre>
+
+<p>En <code>Program.cs</code> de Gateway:</p>
+<pre><code class="language-csharp">builder.Services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
+app.MapReverseProxy();
+</code></pre>
+
+<hr>
+
+<h2>5) Comunicación entre servicios</h2>
+
+<h3>HTTP (sincrónico)</h3>
+<pre><code class="language-csharp">// Orders.Api llama a Catalog.Api para verificar stock/precio
+var http = new HttpClient { BaseAddress = new Uri("http://catalog.api:8080") };
+var product = await http.GetFromJsonAsync&lt;ProductDto&gt;($"/products/{productId}");
+</code></pre>
+
+<h3>Eventos (asíncrono) con RabbitMQ</h3>
+<p>Define un contrato y un bus mínimo:</p>
+
+<pre><code class="language-csharp">// Messaging.Abstractions/IEventBus.cs
+public interface IEventBus {
+    Task PublishAsync&lt;T&gt;(T @event, CancellationToken ct = default);
+    Task SubscribeAsync&lt;T&gt;(Func&lt;T, Task&gt; handler, CancellationToken ct = default);
+}
+
+public record ProductPriceChanged(Guid ProductId, decimal NewPrice);
+</code></pre>
+
+<pre><code class="language-csharp">// Orders.Api: manejador del evento (actualiza precios locales, cache, etc.)
+await _eventBus.SubscribeAsync&lt;ProductPriceChanged&gt;(async evt =&gt; {
+    await _ordersService.UpdatePriceAsync(evt.ProductId, evt.NewPrice);
+});
+</code></pre>
+
+<p>Implementación RabbitMQ: canaliza <code>Publish</code> a un <em>exchange</em> por tipo y <code>Subscribe</code> a una <em>queue</em> por servicio (omito por brevedad, pero la interface anterior te lo deja listo).</p>
+
+<hr>
+
+<h2>6) Observabilidad con OpenTelemetry</h2>
+
+<pre><code class="language-csharp">// En cada servicio (Catalog/Orders) - Program.cs
+builder.Services.AddOpenTelemetry()
+ .WithTracing(t =&gt; t
+   .AddAspNetCoreInstrumentation()
+   .AddHttpClientInstrumentation()
+   .AddEntityFrameworkCoreInstrumentation()
+   .AddOtlpExporter(o =&gt; o.Endpoint = new Uri("http://jaeger:4317")));
+</code></pre>
+
+<p>Abre <code>http://localhost:16686</code> para ver trazas end-to-end.</p>
+
+<hr>
+
+<h2>7) Migraciones y datos</h2>
+
+<pre><code>dotnet ef migrations add Initial -p Catalog.Infrastructure -s Catalog.Api
+dotnet ef database update     -p Catalog.Infrastructure -s Catalog.Api
+</code></pre>
+
+<p>Para Postgres usa el provider <code>Npgsql.EntityFrameworkCore.PostgreSQL</code> y una cadena como:</p>
+
+<pre><code class="language-json">"ConnectionStrings": {
+  "CatalogDb": "Host=postgres;Database=catalog;Username=postgres;Password=postgres"
+}
+</code></pre>
+
+<hr>
+
+<h2>8) Seguridad y configuración</h2>
+<ul>
+  <li><strong>JWT</strong> en Gateway (validación) y propagación de claims a servicios.</li>
+  <li>Usa <strong>variables de entorno</strong> y <code>Secret Manager</code> para credenciales en desarrollo.</li>
+  <li>Habilita <strong>HTTPS</strong> en gateway y, si puedes, mTLS entre servicios internos.</li>
+</ul>
+
+<hr>
+
+<h2>9) Despliegue</h2>
+<p>Publica imágenes en tu <em>registry</em> (Azure Container Registry, GHCR, Docker Hub) y usa Kubernetes para producción:</p>
+
+<pre><code class="language-yaml"># k8s/catalog-deployment.yaml (mini ejemplo)
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: catalog-api }
+spec:
+  replicas: 2
+  selector: { matchLabels: { app: catalog-api } }
+  template:
+    metadata: { labels: { app: catalog-api } }
+    spec:
+      containers:
+        - name: catalog
+          image: your-registry/catalog.api:1.0.0
+          ports: [{ containerPort: 8080 }]
+          env:
+            - name: ConnectionStrings__CatalogDb
+              valueFrom:
+                secretKeyRef: { name: app-secrets, key: catalogdb }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: catalog-api }
+spec:
+  selector: { app: catalog-api }
+  ports: [{ port: 80, targetPort: 8080 }]
+</code></pre>
+
+<hr>
+
+<h2>Checklist de producción</h2>
+<ul>
+  <li>✅ <strong>Base de datos por servicio</strong> y límites de dominio claros.</li>
+  <li>✅ <strong>Idempotencia</strong> y <em>retries/backoff</em> en consumidores de eventos y HTTP.</li>
+  <li>✅ <strong>Tracing/metrics/logging</strong> centralizados (OTel + Jaeger/Prometheus/Seq).</li>
+  <li>✅ <strong>Health checks</strong> y <em>readiness/liveness</em> para el orquestador.</li>
+  <li>✅ <strong>CI/CD</strong> con build, test y push de imágenes por servicio.</li>
+  <li>✅ <strong>Seguridad</strong>: JWT, secretos fuera del repo, HTTPS, mínimos privilegios.</li>
+</ul>
+
+<p><em>Conclusión</em>: Microservicios con .NET + Docker funcionan muy bien cuando el dominio lo requiere y cuentas con las piezas de observabilidad y automatización. Empieza pequeño con 2–3 servicios y <strong>docker-compose</strong>, define contratos claros y añade mensajería para desacoplar. Cuando la escala lo pida, pasa a Kubernetes.</p>

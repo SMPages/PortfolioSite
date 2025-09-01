@@ -14,77 +14,79 @@
           <h3 class="card-title">Envíame un mensaje</h3>
           <p class="card-description">Completa el formulario y te responderé en menos de 24 horas</p>
         </div>
+
         <form (ngSubmit)="onSubmit()" class="contact-form">
           <div class="form-group">
             <label for="name">Nombre completo</label>
             <input
-              id="name"
-              name="name"
-              type="text"
-              placeholder="Tu nombre"
-              [(ngModel)]="formData.name"
-              required
-              class="form-input"
+              id="name" name="name" type="text" placeholder="Tu nombre"
+              [(ngModel)]="formData.name" required class="form-input"
             />
           </div>
+
           <div class="form-group">
             <label for="email">Email</label>
             <input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="tu@email.com"
-              [(ngModel)]="formData.email"
-              required
-              class="form-input"
+              id="email" name="email" type="email" placeholder="tu@email.com"
+              [(ngModel)]="formData.email" required class="form-input"
             />
           </div>
+
           <div class="form-group">
             <label for="message">Mensaje</label>
             <textarea
-              id="message"
-              name="message"
-              placeholder="Cuéntame sobre tu proyecto..."
-              rows="5"
-              [(ngModel)]="formData.message"
-              required
-              class="form-textarea"
+              id="message" name="message" rows="5" placeholder="Cuéntame sobre tu proyecto..."
+              [(ngModel)]="formData.message" required class="form-textarea"
             ></textarea>
           </div>
-          <button type="submit" class="btn btn-primary btn-full">
-            Enviar mensaje
+
+          <button type="submit" class="btn btn-primary btn-full btn-icon">
+            <i class="bi bi-whatsapp" aria-hidden="true"></i>
+            Enviar por WhatsApp
           </button>
+          <!-- Alternativa por correo:
+          <button type="button" class="btn btn-outline-secondary btn-full btn-icon" (click)="onSubmit('email')">
+            <i class="bi bi-envelope" aria-hidden="true"></i> Enviar por Email
+          </button> -->
         </form>
       </div>
 
       <!-- Contact Info -->
       <div class="contact-info">
-        <div class="contact-card">
+        <!-- WhatsApp -->
+        <div class="contact-card whatsapp">
           <div class="contact-header">
             <div class="contact-icon">
-              <i class="icon-message-square"></i>
+              <i class="bi bi-whatsapp" aria-hidden="true"></i>
             </div>
             <div class="contact-details">
               <h4>WhatsApp</h4>
               <p>Respuesta inmediata</p>
             </div>
           </div>
-          <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-full">
+          <a
+            [href]="quickWhatsAppHref" target="_blank" rel="noopener noreferrer"
+            class="btn btn-outline-primary btn-full btn-icon"
+            aria-label="Escribir por WhatsApp a Sebastian"
+          >
+            <i class="bi bi-whatsapp" aria-hidden="true"></i>
             Escribir por WhatsApp
           </a>
         </div>
 
-        <div class="contact-card">
+        <!-- Email -->
+        <div class="contact-card email">
           <div class="contact-header">
             <div class="contact-icon">
-              <i class="icon-mail"></i>
+              <i class="bi bi-envelope" aria-hidden="true"></i>
             </div>
             <div class="contact-details">
               <h4>Email</h4>
-              <a href="mailto:Dev-Sebas&#64;outlook.com">Dev-Sebas&#64;outlook.com</a>
+              <a [href]="mailtoHref">Dev-Sebas&#64;outlook.com</a>
             </div>
           </div>
-          <a href="mailto:Dev-Sebas&#64;outlook.com" class="btn btn-outline-secondary btn-full">
+          <a [href]="mailtoHref" class="btn btn-outline-secondary btn-full btn-icon">
+            <i class="bi bi-envelope" aria-hidden="true"></i>
             Enviar email
           </a>
         </div>
@@ -93,11 +95,15 @@
         <div class="social-section">
           <h4>Sígueme en redes</h4>
           <div class="social-links">
-            <a href="https://linkedin.com/in/devsebas" target="_blank" rel="noopener noreferrer" class="social-link">
-              <i class="icon-linkedin"></i>
+            <a href="https://www.linkedin.com/in/sebastian-marciales/"
+               target="_blank" rel="noopener noreferrer"
+               class="social-link" aria-label="LinkedIn">
+              <i class="bi bi-linkedin" aria-hidden="true"></i>
             </a>
-            <a href="https://github.com/devsebas" target="_blank" rel="noopener noreferrer" class="social-link">
-              <i class="icon-github"></i>
+            <a href="https://github.com/SMPages"
+               target="_blank" rel="noopener noreferrer"
+               class="social-link" aria-label="GitHub">
+              <i class="bi bi-github" aria-hidden="true"></i>
             </a>
           </div>
         </div>

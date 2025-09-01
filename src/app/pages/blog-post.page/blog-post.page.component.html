@@ -1,0 +1,23 @@
+<app-header></app-header>
+
+<article class="container blog-article">
+  <p class="meta"><a routerLink="/blog" class="btn-back">← Volver al blog</a>     {{post?.date}} • {{post?.readTime}} • {{post?.category}}</p>
+  <h1 class="title">{{post?.title}}</h1>
+  <img *ngIf="post?.image" [src]="post?.image" [alt]="post?.title" class="cover" />
+
+  <div class="content" [innerHTML]="html"></div>
+
+  <a routerLink="/blog" class="btn-back mb-3b">← Volver al blog</a>
+</article>
+
+<ng-template #stateTpl>
+  <section class="container">
+    <div *ngIf="loading">Cargando…</div>
+    <div *ngIf="!loading && notFound">
+      <h1>Artículo no encontrado</h1>
+      <a routerLink="/blog" class="btn-back mb-3b">← Volver al blog</a>
+    </div>
+  </section>
+</ng-template>
+
+<app-footer></app-footer>

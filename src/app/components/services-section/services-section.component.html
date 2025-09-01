@@ -1,9 +1,9 @@
 <section id="servicios" class="services-section">
   <div class="container">
     <div class="section-header">
-      <h2 class="section-title">Servicios de Desarrollo</h2>
+      <h2 class="section-title">Servicios pensados para darte visibilidad</h2>
       <p class="section-subtitle">
-        Soluciones tecnológicas completas para impulsar tu negocio
+        Te llevo de la idea a una web en producción: SEO local, WhatsApp y velocidad para atraer clientes reales.
       </p>
     </div>
 
@@ -11,11 +11,14 @@
       <div class="service-card" *ngFor="let service of services; let i = index">
         <div class="service-header">
           <div class="service-icon">
-            <i class="icon-{{ service.icon }}"></i>
+            <!-- Bootstrap Icons -->
+            <i class="bi" [ngClass]="service.icon" aria-hidden="true"></i>
           </div>
           <h3 class="service-title">{{ service.title }}</h3>
         </div>
+
         <p class="service-description">{{ service.description }}</p>
+
         <ul class="service-features">
           <li *ngFor="let feature of service.features" class="feature-item">
             <span class="feature-dot"></span>
@@ -26,7 +29,16 @@
     </div>
 
     <div class="section-cta">
-      <a href="#contacto" class="btn btn-secondary">Solicita una cotización</a>
+      <a
+        class="btn btn-whatsapp"
+        href="https://wa.me/573228969215?text=Hola%20Sebastian%2C%20vengo%20desde%20tu%20web%20DevSebas.%20Me%20interesa%20crear%20una%20p%C3%A1gina%20para%20mi%20negocio.%20%C2%BFPodemos%20hablar%3F"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Escribir por WhatsApp a Sebastian"
+      >
+        <i class="bi bi-whatsapp" aria-hidden="true"></i>
+        Escribir por WhatsApp
+      </a>
     </div>
   </div>
 </section>

@@ -1,0 +1,359 @@
+<h1>Implementando Clean Architecture en .NET</h1>
+
+<p><strong>TL;DR</strong>: separa tu código en capas con dependencias hacia adentro (Domain → Application → Infrastructure → Web). 
+Define reglas del negocio en <em>Domain</em>, casos de uso en <em>Application</em>, detalles técnicos en <em>Infrastructure</em> y exposición HTTP en <em>Web/API</em>. 
+Así logras testabilidad, menor acoplamiento y un sistema fácil de evolucionar.</p>
+
+<hr>
+
+<h2>¿Qué es Clean Architecture y por qué usarla?</h2>
+<p>Clean Architecture propone organizar el software en capas concéntricas, donde las dependencias apuntan al <strong>núcleo del negocio</strong>. 
+La idea: tu lógica de negocio debe sobrevivir aunque cambies la base de datos, el framework web o el proveedor de nube.</p>
+
+<pre><code>┌───────────────────────────┐   Web / API (endpoints, controllers, DTOs)
+│           Web             │
+├───────────────────────────┤   Infrastructure (EF Core, Stripe, Redis, Email…)
+│      Infrastructure       │
+├───────────────────────────┤   Application (casos de uso, orquestación)
+│        Application        │
+├───────────────────────────┤   Domain (entidades, value objects, reglas)
+│          Domain           │
+└───────────────────────────┘
+</code></pre>
+
+<ul>
+  <li><strong>Domain</strong>: Entidades, Value Objects, eventos de dominio y reglas puras (sin depender de .NET ni EF).</li>
+  <li><strong>Application</strong>: Casos de uso (comandos/consultas), puertos (interfaces), validaciones y orquestación.</li>
+  <li><strong>Infrastructure</strong>: Implementaciones técnicas de los puertos: EF Core, HTTP, colas, archivos, etc.</li>
+  <li><strong>Web/API</strong>: Endpoints, serialización/deserialización, autenticación/autorización y filtros.</li>
+</ul>
+
+<hr>
+
+<h2>Estructura mínima de carpetas</h2>
+<pre><code>src/
+  Domain/
+    Entities/
+    ValueObjects/
+    Abstractions/
+  Application/
+    UseCases/
+    Abstractions/
+    Validators/
+  Infrastructure/
+    Persistence/
+    Repositories/
+  Web/
+    Program.cs
+    Endpoints/
+</code></pre>
+
+<hr>
+
+<h2>1) Capa Domain: entidades y value objects</h2>
+<p>Define tu modelo de negocio sin dependencias. Ejemplo: un <em>Product</em> con un <em>Money</em> como value object.</p>
+
+<pre><code class="language-csharp">namespace Domain.ValueObjects;
+
+public sealed record Money(decimal Amount, string Currency)
+{
+    public static Money From(decimal amount, string currency = "USD")
+    {
+        if (amount &lt; 0) throw new ArgumentException("Amount must be positive.");
+        if (string.IsNullOrWhiteSpace(currency)) throw new ArgumentException("Currency required.");
+        return new Money(amount, currency.ToUpperInvariant());
+    }
+
+    public Money Add(Money other)
+        =&gt; Currency != other.Currency
+            ? throw new InvalidOperationException("Different currencies.")
+            : this with { Amount = Amount + other.Amount };
+}
+</code></pre>
+
+<pre><code class="language-csharp">namespace Domain.Entities;
+
+using Domain.ValueObjects;
+
+public sealed class Product
+{
+    private Product() { } // EF
+    public Guid Id { get; private set; } = Guid.NewGuid();
+    public string Name { get; private set; } = default!;
+    public Money Price { get; private set; } = Money.From(0);
+
+    public Product(string name, Money price)
+    {
+        Rename(name);
+        ChangePrice(price);
+    }
+
+    public void Rename(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Name required.");
+        Name = name.Trim();
+    }
+
+    public void ChangePrice(Money price)
+    {
+        if (price.Amount == 0) throw new ArgumentException("Price must be &gt; 0.");
+        Price = price;
+    }
+}
+</code></pre>
+
+<hr>
+
+<h2>2) Capa Application: casos de uso y puertos</h2>
+<p>La aplicación orquesta la lógica llamando a <em>puertos</em> (interfaces) que luego Infrastructure implementa. 
+Puedes usar MediatR, pero aquí lo mostramos simple para que sea claro.</p>
+
+<pre><code class="language-csharp">namespace Application.Abstractions;
+
+using Domain.Entities;
+
+public interface IProductRepository
+{
+    Task&lt;Product?&gt; GetByIdAsync(Guid id, CancellationToken ct);
+    Task AddAsync(Product product, CancellationToken ct);
+    Task SaveChangesAsync(CancellationToken ct);
+}
+</code></pre>
+
+<pre><code class="language-csharp">namespace Application.UseCases.Products;
+
+using Application.Abstractions;
+using Domain.Entities;
+using Domain.ValueObjects;
+
+public sealed class CreateProductCommand
+{
+    public required string Name { get; init; }
+    public required decimal Price { get; init; }
+    public string Currency { get; init; } = "USD";
+}
+
+public sealed class CreateProductHandler
+{
+    private readonly IProductRepository _repo;
+
+    public CreateProductHandler(IProductRepository repo) =&gt; _repo = repo;
+
+    public async Task&lt;Guid&gt; Handle(CreateProductCommand cmd, CancellationToken ct)
+    {
+        var product = new Product(cmd.Name, Money.From(cmd.Price, cmd.Currency));
+        await _repo.AddAsync(product, ct);
+        await _repo.SaveChangesAsync(ct);
+        return product.Id;
+    }
+}
+</code></pre>
+
+<p>Validación (ejemplo con <em>FluentValidation</em>):</p>
+
+<pre><code class="language-csharp">using FluentValidation;
+
+namespace Application.UseCases.Products;
+
+public sealed class CreateProductValidator : AbstractValidator&lt;CreateProductCommand&gt;
+{
+    public CreateProductValidator()
+    {
+        RuleFor(x =&gt; x.Name).NotEmpty().MaximumLength(120);
+        RuleFor(x =&gt; x.Price).GreaterThan(0);
+        RuleFor(x =&gt; x.Currency).NotEmpty().Length(3);
+    }
+}
+</code></pre>
+
+<hr>
+
+<h2>3) Capa Infrastructure: EF Core y repositorio</h2>
+
+<pre><code class="language-csharp">using Domain.Entities;
+using Domain.ValueObjects;
+using Microsoft.EntityFrameworkCore;
+
+namespace Infrastructure.Persistence;
+
+public sealed class AppDbContext : DbContext
+{
+    public AppDbContext(DbContextOptions&lt;AppDbContext&gt; options) : base(options) { }
+
+    public DbSet&lt;Product&gt; Products =&gt; Set&lt;Product&gt;();
+
+    protected override void OnModelCreating(ModelBuilder model)
+    {
+        model.Entity&lt;Product&gt;(builder =&gt;
+        {
+            builder.HasKey(p =&gt; p.Id);
+            builder.Property(p =&gt; p.Name).HasMaxLength(120).IsRequired();
+
+            builder.OwnsOne(p =&gt; p.Price, price =&gt;
+            {
+                price.Property(m =&gt; m.Amount).HasColumnType("decimal(18,2)");
+                price.Property(m =&gt; m.Currency).HasMaxLength(3);
+            });
+        });
+    }
+}
+</code></pre>
+
+<pre><code class="language-csharp">using Application.Abstractions;
+using Domain.Entities;
+using Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+
+namespace Infrastructure.Repositories;
+
+public sealed class ProductRepository : IProductRepository
+{
+    private readonly AppDbContext _db;
+    public ProductRepository(AppDbContext db) =&gt; _db = db;
+
+    public async Task&lt;Product?&gt; GetByIdAsync(Guid id, CancellationToken ct)
+        =&gt; await _db.Products.FirstOrDefaultAsync(p =&gt; p.Id == id, ct);
+
+    public async Task AddAsync(Product product, CancellationToken ct)
+        =&gt; await _db.Products.AddAsync(product, ct);
+
+    public Task SaveChangesAsync(CancellationToken ct)
+        =&gt; _db.SaveChangesAsync(ct);
+}
+</code></pre>
+
+<hr>
+
+<h2>4) Capa Web/API: Minimal APIs en .NET 8</h2>
+<p>Expón DTOs de entrada/salida, injerta el <em>handler</em> y valida. 
+Con <em>Minimal APIs</em> la configuración queda compacta.</p>
+
+<pre><code class="language-csharp">// Web/Program.cs
+using Application.Abstractions;
+using Application.UseCases.Products;
+using FluentValidation;
+using Infrastructure.Persistence;
+using Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Infra
+builder.Services.AddDbContext&lt;AppDbContext&gt;(opt =&gt;
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+
+// DI
+builder.Services.AddScoped&lt;IProductRepository, ProductRepository&gt;();
+builder.Services.AddScoped&lt;CreateProductHandler&gt;();
+builder.Services.AddScoped&lt;IValidator&lt;CreateProductCommand&gt;, CreateProductValidator&gt;();
+
+var app = builder.Build();
+
+app.MapPost("/products", async (
+    CreateProductCommand cmd,
+    CreateProductHandler handler,
+    IValidator&lt;CreateProductCommand&gt; validator,
+    CancellationToken ct) =&gt;
+{
+    var result = await validator.ValidateAsync(cmd, ct);
+    if (!result.IsValid)
+        return Results.ValidationProblem(result.ToDictionary());
+
+    var id = await handler.Handle(cmd, ct);
+    return Results.Created($"/products/{id}", new { id });
+});
+
+app.MapGet("/products/{id:guid}", async (
+    Guid id, IProductRepository repo, CancellationToken ct) =&gt;
+{
+    var product = await repo.GetByIdAsync(id, ct);
+    return product is null ? Results.NotFound() : Results.Ok(product);
+});
+
+app.Run();
+</code></pre>
+
+<hr>
+
+<h2>Pruebas unitarias del caso de uso (sin base de datos)</h2>
+<p>Gracias a los puertos, puedes probar la aplicación con un repositorio en memoria.</p>
+
+<pre><code class="language-csharp">using Application.Abstractions;
+using Application.UseCases.Products;
+using Domain.Entities;
+using Domain.ValueObjects;
+
+public sealed class InMemoryProductRepository : IProductRepository
+{
+    private readonly Dictionary&lt;Guid, Product&gt; _store = new();
+
+    public Task&lt;Product?&gt; GetByIdAsync(Guid id, CancellationToken ct)
+        =&gt; Task.FromResult(_store.TryGetValue(id, out var p) ? p : null);
+
+    public Task AddAsync(Product product, CancellationToken ct)
+    {
+        _store[product.Id] = product;
+        return Task.CompletedTask;
+    }
+
+    public Task SaveChangesAsync(CancellationToken ct) =&gt; Task.CompletedTask;
+}
+
+// xUnit
+public class CreateProductTests
+{
+    [Fact]
+    public async Task Creates_product_with_valid_data()
+    {
+        var repo = new InMemoryProductRepository();
+        var handler = new CreateProductHandler(repo);
+
+        var cmd = new CreateProductCommand { Name = "Cepillo dental", Price = 12.5m, Currency = "USD" };
+        var id = await handler.Handle(cmd, default);
+
+        var saved = await repo.GetByIdAsync(id, default);
+        Assert.NotNull(saved);
+        Assert.Equal("Cepillo dental", saved!.Name);
+        Assert.Equal(Money.From(12.5m, "USD"), saved.Price);
+    }
+}
+</code></pre>
+
+<hr>
+
+<h2>Migraciones y despliegue</h2>
+<ol>
+  <li>Configura tu cadena de conexión <code>Default</code> en <code>appsettings.json</code>.</li>
+  <li>Desde el proyecto <em>Web</em> (o donde esté el <code>DbContext</code>), ejecuta:
+    <pre><code>dotnet ef migrations add Initial --project ../Infrastructure --startup-project ./Web
+dotnet ef database update --project ../Infrastructure --startup-project ./Web
+</code></pre>
+  </li>
+  <li>Despliega. Cambiar SQL Server por Postgres o Azure SQL sólo toca <em>Infrastructure</em>.</li>
+</ol>
+
+<hr>
+
+<h2>Checklist de adopción</h2>
+<ul>
+  <li>✅ Entidades y Value Objects en <strong>Domain</strong> sin dependencias.</li>
+  <li>✅ Casos de uso orquestan lógica en <strong>Application</strong> y llaman a puertos.</li>
+  <li>✅ EF Core, repos, integraciones en <strong>Infrastructure</strong>.</li>
+  <li>✅ Endpoints/DTOs y auth en <strong>Web</strong>.</li>
+  <li>✅ Validaciones con FluentValidation y pruebas de casos de uso con dobles en memoria.</li>
+  <li>✅ Sin acoplar el dominio a EF, HTTP o librerías externas.</li>
+</ul>
+
+<hr>
+
+<h2>Variantes y recomendaciones</h2>
+<ul>
+  <li><strong>CQRS + MediatR</strong>: si el proyecto crece, separa comandos/consultas y usa <em>pipelines</em> (logging, validación, transacciones).</li>
+  <li><strong>Mapeo</strong>: Mapster o AutoMapper para transformar DTOs &lt;-&gt; domain.</li>
+  <li><strong>Transacciones</strong>: maneja <em>Unit of Work</em> en Infrastructure (con el propio DbContext) o filtros en Web.</li>
+  <li><strong>Eventos de Dominio</strong>: emite cambios importantes y manéjalos en Application para side-effects (emails, auditoría, etc.).</li>
+</ul>
+
+<p><em>Conclusión</em>: Clean Architecture no es una religión, es una guía. 
+Empieza simple (como arriba) y agrega complejidad sólo cuando tu producto lo pida. 
+Así mantienes tu base de código clara, testeable y lista para crecer.</p>

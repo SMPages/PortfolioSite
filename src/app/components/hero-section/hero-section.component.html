@@ -6,37 +6,48 @@
       <div class="profile-image animate-fade-in">
         <!-- Coloca la imagen en: src/public/images/profile.jpg -->
         <img
-          src="/profile.png"
+          src="/images/profile.JPG"
           alt="Foto de perfil"
           class="profile-photo"
-          width="128"
-          height="128"
+          loading="eager"
+        />
+        <img
+          src="/images/profile.JPG"
+          alt="Foto de perfil"
+          class="profile-photo"
+          loading="eager"
+        />
+        <img
+          src="/images/profile.JPG"
+          alt="Foto de perfil"
+          class="profile-photo"
           loading="eager"
         />
       </div>
 
       <!-- Main Heading -->
       <h1 class="hero-title animate-fade-in-up text-balance">
-        Construyo soluciones digitales <span class="text-primary">escalables</span> y de
-        <span class="text-secondary">alta calidad</span> en .NET y Angular
+        ¿Buscas darte a conocer en la <span class="text-primary">web?</span> <br/>
+        <span class="text-secondary">Llegaste al lugar indicado.</span>
       </h1>
 
       <!-- Subtitle -->
       <p class="hero-subtitle animate-fade-in-up text-pretty">
-        Más de 3 años de experiencia ayudando empresas a transformar procesos con software eficiente
-      </p>
+       Mi nombre es <span class="text-primary">Sebastian Marciales</span> 
+y me especializo en crear sitios profesionales y rápidos con SEO local, WhatsApp y Google Maps para que tu emprendimiento, negocio en crecimiento o empresa tenga un nombre y un lugar en la web.      </p>
 
       <!-- CTA Buttons -->
       <div class="cta-buttons animate-fade-in-up">
-        <a href="#contacto" (click)="scrollToSection('contacto')" class="btn-primary">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-            <line x1="16" y1="2" x2="16" y2="6"></line>
-            <line x1="8" y1="2" x2="8" y2="6"></line>
-            <line x1="3" y1="10" x2="21" y2="10"></line>
-          </svg>
-          Agenda una reunión
-        </a>
+         <a
+            class="btn-whatsapp"
+            href="https://wa.me/573228969215?text=Hola%20Sebastian%2C%20vengo%20desde%20tu%20web%20DevSebas.%20Me%20interesa%20crear%20una%20p%C3%A1gina%20para%20mi%20negocio.%20%C2%BFPodemos%20hablar%3F"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Escribir por WhatsApp a Sebastian"
+          >
+            <i class="bi bi-whatsapp" aria-hidden="true"></i>
+            Escribir por WhatsApp
+          </a>
         <a href="#proyectos" (click)="scrollToSection('proyectos')" class="btn-secondary">
           Ver proyectos
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

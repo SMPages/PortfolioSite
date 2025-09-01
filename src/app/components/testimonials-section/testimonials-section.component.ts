@@ -21,31 +21,47 @@ export class TestimonialsSectionComponent implements OnInit, OnDestroy {
   private intervalId?: number
 
   testimonials: Testimonial[] = [
-    {
-      name: "María González",
-      position: "CTO, TechCorp",
-      content:
-        "Sebastian desarrolló una solución completa que transformó nuestros procesos. Su expertise en .NET y Angular es excepcional.",
-      rating: 5,
-      avatar: "/images/professional-woman-avatar.png",
-    },
-    {
-      name: "Carlos Rodríguez",
-      position: "Gerente de IT, InnovateSoft",
-      content:
-        "Excelente trabajo en la arquitectura de microservicios. El sistema es robusto, escalable y fácil de mantener.",
-      rating: 5,
-      avatar: "/images/professional-man-avatar.png",
-    },
-    {
-      name: "Ana Martínez",
-      position: "Product Manager, StartupXYZ",
-      content:
-        "La calidad del código y la atención al detalle son impresionantes. Definitivamente recomiendo sus servicios.",
-      rating: 5,
-      avatar: "/images/professional-woman-avatar-glasses.png",
-    },
-  ]
+  {
+    name: "Dra. Sorany Diaz",
+    position: "Odontóloga, Consultorio Sorany Diaz",
+    content:
+      "Con la nueva web empezamos a aparecer en Google como 'odontóloga en Bogotá'. El botón de WhatsApp nos trae consultas todos los días y agendar es más fácil.",
+    rating: 5,
+    avatar: "/testimonials/testimonial-sorany.jpg"
+  },
+  {
+    name: "Julián Ríos",
+    position: "Dueño, Tienda de Ropa Lila",
+    content:
+      "El catálogo con WhatsApp nos ahorró mensajes sueltos. La gente elige tallas, manda foto y compra. Carga rápido y lo actualizo sin enredos.",
+    rating: 5,
+    avatar: "/testimonials/testimonial-hombre.jpg"
+  },
+  {
+    name: "María Alejandra Cabarique",
+    position: "Psicóloga clínica",
+    content:
+      "Sebastian creó mi sitio en React con enfoque en SEO local y contacto por WhatsApp. En la primera semana ya estaba recibiendo consultas de pacientes nuevos. El proceso fue ágil y quedé feliz con el diseño.",
+    rating: 5,
+    avatar: "/testimonials/maria-alejandra.jpg" // cambia la ruta por la que tengas
+  },
+  {
+    name: "Sofía Herrera",
+    position: "Administradora, Clínica Vida",
+    content:
+      "Migramos el sitio en dos semanas sin perder posicionamiento. Ahora recibimos más mensajes y el equipo no se preocupa por lo técnico.",
+    rating: 5,
+    avatar: "/testimonials/testimonial-mujer.jpg"
+  },
+  {
+    name: "Carlos Medina",
+    position: "Emprendedor, Servicios de Mantenimiento",
+    content:
+      "Pasé de ‘no tengo web’ a ‘me escriben por WhatsApp’. Puedo cotizar desde el celular y los clientes nos encuentran por ciudad.",
+    rating: 5,
+    avatar: "/testimonials/testimonial-hombre.jpg"
+  }
+];
 
   ngOnInit() {
     this.startAutoSlide()

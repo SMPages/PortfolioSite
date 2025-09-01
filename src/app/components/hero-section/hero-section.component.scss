@@ -17,7 +17,7 @@
 }
 
 .profile-image {
-  margin-bottom: 2rem;
+//  margin-bottom: 2rem;
 
   .profile-placeholder {
     width: 8rem;
@@ -62,7 +62,7 @@
   max-width: 48rem;
   margin-left: auto;
   margin-right: auto;
-
+ .text-primary { font-weight: bold; font-style: italic;}
   @media (min-width: $breakpoint-sm) {
     font-size: 1.5rem;
   }
@@ -117,10 +117,10 @@
   }
 }
 .profile-photo {
-  width: 8rem;
-  height: 8rem;
-  border-radius: 50%;
+  width: 15rem;
+  height: 15rem;
+  border-radius: 10%;
   object-fit: cover;
-  display: block;
-  margin: 0 auto;
+  display: inline-flex;
+  margin: 0 5px;
 }

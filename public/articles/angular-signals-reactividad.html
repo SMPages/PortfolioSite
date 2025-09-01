@@ -1,0 +1,227 @@
+<h1>Angular Signals: el futuro de la reactividad</h1>
+
+<p><strong>TL;DR</strong>: Los <em>Signals</em> son una API reactiva en Angular con <em>estado observable síncrono</em> y <em>dependencias rastreadas</em>. 
+Se crean con <code>signal()</code>, se derivan con <code>computed()</code> y reaccionan con <code>effect()</code>. 
+Traen rendimiento predecible, menor complejidad que cadenas de RxJS para estado local y abren la puerta a <em>zoneless</em> y nuevas optimizaciones del framework.</p>
+
+<hr>
+
+<h2>¿Qué problema resuelven los Signals?</h2>
+<p>Para estado local de componentes, RxJS suele ser demasiado potente/verboso. 
+Los Signals ofrecen un modelo más simple: el valor se lee como una función (p. ej. <code>count()</code>), 
+Angular rastrea automáticamente qué depende de qué y vuelve a renderizar solo lo necesario.</p>
+
+<ul>
+  <li><strong>Síncronos y pull-based</strong>: lees el valor cuando lo necesitas (<code>count()</code>).</li>
+  <li><strong>Deterministas</strong>: no hay multicasting, suscripciones ocultas ni <em>tearing</em>.</li>
+  <li><strong>Declarativos</strong>: dependencias inferidas, sin wiring manual.</li>
+</ul>
+
+<hr>
+
+<h2>API básica</h2>
+
+<pre><code class="language-typescript">import { Component, signal, computed, effect } from '@angular/core';
+
+@Component({
+  standalone: true,
+  selector: 'demo-counter',
+  template: `
+    &lt;div class="card"&gt;
+      &lt;p&gt;Contador: {{ count() }}&lt;/p&gt;
+      &lt;p&gt;Es par: {{ isEven() ? 'sí' : 'no' }}&lt;/p&gt;
+      &lt;button (click)="inc()"&gt;+1&lt;/button&gt;
+      &lt;button (click)="reset()"&gt;reset&lt;/button&gt;
+    &lt;/div&gt;
+  `
+})
+export class DemoCounter {
+  // 1) estado
+  readonly count = signal(0);
+
+  // 2) derivado puro
+  readonly isEven = computed(() =&gt; this.count() % 2 === 0);
+
+  // 3) efecto (side-effects, logging, analytics, etc.)
+  private log = effect(() =&gt; {
+    console.log('nuevo valor', this.count());
+  });
+
+  inc()   { this.count.update(v =&gt; v + 1); }
+  reset() { this.count.set(0); }
+}
+</code></pre>
+
+<p><strong>Mutación</strong>:</p>
+<ul>
+  <li><code>set(v)</code>: asigna un valor nuevo.</li>
+  <li><code>update(fn)</code>: calcula a partir del actual.</li>
+  <li><code>mutate(fn)</code>: para mutar estructuras (arrays/objetos) sin recrearlas.</li>
+</ul>
+
+<pre><code class="language-typescript">const items = signal&lt;string[]&gt;([]);
+items.mutate(arr =&gt; arr.push('nuevo')); // no recrea el array
+</code></pre>
+
+<hr>
+
+<h2>Derivados con <code>computed()</code></h2>
+<p>Los <em>computed</em> son funciones puras memorizadas automáticamente. Se recalculan solo cuando cambian sus dependencias.</p>
+
+<pre><code class="language-typescript">const price = signal(100);
+const tax   = signal(0.19);
+const total = computed(() =&gt; price() * (1 + tax()));
+</code></pre>
+
+<hr>
+
+<h2>Efectos con <code>effect()</code> (y limpieza)</h2>
+<p>Usa <code>effect()</code> para side-effects: escribir en <code>localStorage</code>, disparar analytics, timers, etc. Maneja la limpieza con el token <code>onCleanup()</code>.</p>
+
+<pre><code class="language-typescript">import { effect, onCleanup } from '@angular/core';
+
+const tick = signal(0);
+
+const timer = effect(() =&gt; {
+  const id = setInterval(() =&gt; tick.update(v =&gt; v + 1), 1000);
+  onCleanup(() =&gt; clearInterval(id));
+});
+</code></pre>
+
+<hr>
+
+<h2>Interoperabilidad con RxJS</h2>
+<p>Signals y RxJS coexisten. Para integrarte con librerías que exponen Observables usa el paquete de interop.</p>
+
+<pre><code class="language-typescript">import { toSignal, toObservable } from '@angular/core/rxjs-interop';
+import { of, map } from 'rxjs';
+
+// Observable -&gt; Signal
+const user$ = of({ name: 'Ada' });
+const user  = toSignal(user$, { initialValue: { name: '' } });
+
+// Signal -&gt; Observable
+const name$ = toObservable(user).pipe(map(u =&gt; u.name));
+</code></pre>
+
+<p>Regla práctica: <strong>RxJS para flujos asincrónicos/streams</strong> (HTTP, websockets, eventos), <strong>Signals para estado local y derivaciones de UI</strong>.</p>
+
+<hr>
+
+<h2>Inputs como Signals (Angular 17+)</h2>
+<p>Puedes declarar entradas del componente como signals con <code>input()</code> (y derivarlas con <code>computed()</code>).</p>
+
+<pre><code class="language-typescript">import { Component, input, computed } from '@angular/core';
+
+@Component({
+  standalone: true,
+  selector: 'product-price',
+  template: `
+    &lt;p&gt;Precio: {{ price() | currency:'USD' }}&lt;/p&gt;
+    &lt;p&gt;Precio con IVA: {{ withTax() | currency:'USD' }}&lt;/p&gt;
+  `
+})
+export class ProductPrice {
+  price = input.required&lt;number&gt;();
+  withTax = computed(() =&gt; this.price() * 1.19);
+}
+</code></pre>
+
+<hr>
+
+<h2>Patrones útiles</h2>
+
+<h3>1) Estado de formulario sencillo</h3>
+<pre><code class="language-typescript">import { Component, signal, computed } from '@angular/core';
+
+@Component({
+  standalone: true,
+  selector: 'contact-form',
+  template: `
+    &lt;form (ngSubmit)="submit()"&gt;
+      &lt;input [(ngModel)]="nameLocal" name="name" placeholder="Nombre"&gt;
+      &lt;textarea [(ngModel)]="msgLocal" name="msg" placeholder="Mensaje"&gt;&lt;/textarea&gt;
+
+      &lt;button [disabled]="!canSend()"&gt;Enviar&lt;/button&gt;
+    &lt;/form&gt;
+  `
+})
+export class ContactForm {
+  private name  = signal('');
+  private msg   = signal('');
+  // two–way binding adaptado
+  get nameLocal() { return this.name(); }
+  set nameLocal(v: string) { this.name.set(v); }
+  get msgLocal() { return this.msg(); }
+  set msgLocal(v: string) { this.msg.set(v); }
+
+  canSend = computed(() =&gt; this.name().length &gt;= 3 && this.msg().length &gt;= 10);
+
+  submit() { /* ... */ }
+}
+</code></pre>
+
+<h3>2) Store ligera con servicio inyectable</h3>
+<pre><code class="language-typescript">import { Injectable, signal, computed } from '@angular/core';
+
+export interface Todo { id: number; text: string; done: boolean; }
+
+@Injectable({ providedIn: 'root' })
+export class TodoStore {
+  private list = signal&lt;Todo[]&gt;([]);
+  readonly todos = computed(() =&gt; this.list());
+  readonly pending = computed(() =&gt; this.list().filter(t =&gt; !t.done));
+  readonly done = computed(() =&gt; this.list().filter(t =&gt;  t.done));
+
+  add(text: string) {
+    this.list.update(xs =&gt; [...xs, { id: Date.now(), text, done: false }]);
+  }
+  toggle(id: number) {
+    this.list.mutate(xs =&gt; {
+      const t = xs.find(x =&gt; x.id === id);
+      if (t) t.done = !t.done;
+    });
+  }
+}
+</code></pre>
+
+<hr>
+
+<h2>Rendimiento y change detection</h2>
+<ul>
+  <li>Los Signals permiten que Angular reprocese solo lo que depende del valor cambiado.</li>
+  <li>Funcionan muy bien con componentes <em>OnPush</em>.</li>
+  <li>Facilitan optimizaciones hacia un futuro <em>zone-less</em> (sin Zone.js) y renderizado más fino.</li>
+</ul>
+
+<hr>
+
+<h2>Buenas prácticas</h2>
+<ul>
+  <li><strong>Usa <code>computed()</code> para derivaciones puras</strong>. No pongas side-effects dentro.</li>
+  <li><strong>Usa <code>effect()</code> solo para efectos secundarios</strong> (I/O, logs, timers). Recuerda <code>onCleanup()</code>.</li>
+  <li><strong>No mutes objetos/arrays sin <code>mutate()</code></strong>. O recrea con <code>update()</code>.</li>
+  <li><strong>RxJS sigue vivo</strong> para flujos asincrónicos; no intentes reescribir todo si ya funciona bien.</li>
+</ul>
+
+<hr>
+
+<h2>Errores comunes</h2>
+<ul>
+  <li>Leer un signal sin invocarlo (debes usar <code>count()</code>, no <code>count</code>).</li>
+  <li>Olvidar limpiar recursos en <code>effect()</code> con <code>onCleanup()</code>.</li>
+  <li>Hacer trabajo pesado dentro de <code>effect()</code> en cada cambio: llévalo a un <code>computed()</code> y memoriza.</li>
+</ul>
+
+<hr>
+
+<h2>Checklist para migrar paso a paso</h2>
+<ul>
+  <li>✅ Mantén RxJS en servicios/HTTP; usa Signals para estado local y derivado de UI.</li>
+  <li>✅ Convierte un <code>BehaviorSubject</code> a <code>signal()</code> solo si se simplifica.</li>
+  <li>✅ Usa <code>toSignal()</code> / <code>toObservable()</code> para interop puntual.</li>
+  <li>✅ Encapsula lógica compartida en <em>stores</em> inyectables con signals.</li>
+</ul>
+
+<p><em>Conclusión</em>: Signals hacen que el estado de UI en Angular sea más claro y predecible. 
+Empieza por componentes con estado local, deriva valores con <code>computed()</code> y reserva RxJS para lo que mejor hace: flujos asíncronos y composición avanzada.</p>

@@ -1,39 +1,58 @@
 <section id="proyectos" class="projects-section">
   <div class="container">
     <div class="section-header">
-      <h2 class="section-title">Proyectos Destacados</h2>
+      <h2 class="section-title">Proyectos destacados</h2>
       <p class="section-subtitle">
-        Algunos de los proyectos que he desarrollado para empresas y clientes
+        Algunos de los trabajos que he desarrollado para empresas y clientes: rendimiento, SEO local y contacto sin fricción.
       </p>
     </div>
 
     <div class="projects-grid">
-      <div class="project-card" *ngFor="let project of projects; let i = index">
-        <div class="project-image">
-          <img [src]="project.image" [alt]="project.title" />
-        </div>
+      <article class="project-card" *ngFor="let project of projects; let i = index">
+        <figure class="project-image">
+          <img
+            [src]="project.image"
+            [alt]="project.title"
+            loading="lazy"
+            decoding="async"
+            width="640"
+            height="360"
+          />
+        </figure>
+
         <div class="project-content">
           <h3 class="project-title">{{ project.title }}</h3>
           <p class="project-description">{{ project.description }}</p>
-          <div class="project-technologies">
+
+          <div class="project-technologies" aria-label="Tecnologías usadas">
             <span class="tech-badge" *ngFor="let tech of project.technologies">{{ tech }}</span>
           </div>
-          <div class="project-actions">
-            <a [href]="project.demoUrl" class="btn btn-outline">
-              <i class="icon-external-link"></i>
-              Demo
-            </a>
-            <a [href]="project.githubUrl" class="btn btn-outline">
-              <i class="icon-github"></i>
-              Código
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <div class="section-cta">
-      <button class="btn btn-outline-primary">Ver más proyectos</button>
+          <div class="project-actions"
+              *ngIf="hasLink(project.demoUrl) || hasLink(project.githubUrl)">
+              <a *ngIf="hasLink(project.demoUrl)"
+                [href]="project.demoUrl"
+                class="btn btn-outline"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Abrir demo en una nueva pestaña">
+                <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+                Sitio Web
+              </a>
+
+              <a *ngIf="hasLink(project.githubUrl)"
+                [href]="project.githubUrl"
+                class="btn btn-outline"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Ver código en GitHub">
+                <i class="bi bi-github" aria-hidden="true"></i>
+                Código
+              </a>
+          </div>
+
+        </div>
+      </article>
     </div>
   </div>
 </section>
