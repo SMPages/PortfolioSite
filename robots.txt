@@ -1,6 +1,4 @@
 User-agent: *
 Allow: /
 Disallow: /assets/
-Disallow: /icons/
-
 Sitemap: https://dev-sebas.com/sitemap.xml
