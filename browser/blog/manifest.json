@@ -1,0 +1,14 @@
+{
+  "clean-architecture-dotnet": {
+    "og": "/mnt/data/blog_images/clean-architecture-dotnet_og.png",
+    "card": "/mnt/data/blog_images/clean-architecture-dotnet_card.png"
+  },
+  "angular-signals-reactividad": {
+    "og": "/mnt/data/blog_images/angular-signals-reactividad_og.png",
+    "card": "/mnt/data/blog_images/angular-signals-reactividad_card.png"
+  },
+  "microservicios-dotnet-docker": {
+    "og": "/mnt/data/blog_images/microservicios-dotnet-docker_og.png",
+    "card": "/mnt/data/blog_images/microservicios-dotnet-docker_card.png"
+  }
+}
