@@ -1,14 +1,31 @@
-<section id="proyectos" class="projects-section">
+<section
+  id="proyectos"
+  class="projects-section"
+  aria-labelledby="projects-title"
+  [seoSection]="{
+    title: 'Proyectos destacados | Sitios rápidos que convierten',
+    description: 'Casos reales con SEO local, WhatsApp y rendimiento. Webs, APIs y catálogos pensados para convertir.',
+    url: 'https://dev-sebas.com/#proyectos',
+    type: 'website'
+  }"
+  seoId="proyectos"
+>
   <div class="container">
     <div class="section-header">
-      <h2 class="section-title">Proyectos destacados</h2>
+      <h2 id="projects-title" class="section-title">Proyectos destacados</h2>
       <p class="section-subtitle">
         Algunos de los trabajos que he desarrollado para empresas y clientes: rendimiento, SEO local y contacto sin fricción.
       </p>
     </div>
 
-    <div class="projects-grid">
-      <article class="project-card" *ngFor="let project of projects; let i = index">
+    <div class="projects-grid" role="list">
+      <article
+        class="project-card"
+        role="listitem"
+        *ngFor="let project of projects; let i = index"
+        [attr.id]="project.slug || ('proyecto-' + i)"
+        [attr.aria-labelledby]="'project-title-' + i"
+      >
         <figure class="project-image">
           <img
             [src]="project.image"
@@ -18,39 +35,42 @@
             width="640"
             height="360"
           />
+          <figcaption class="visually-hidden">{{ project.title }}</figcaption>
         </figure>
 
         <div class="project-content">
-          <h3 class="project-title">{{ project.title }}</h3>
+          <h3 class="project-title" [attr.id]="'project-title-' + i">{{ project.title }}</h3>
           <p class="project-description">{{ project.description }}</p>
 
-          <div class="project-technologies" aria-label="Tecnologías usadas">
+          <div class="project-technologies" [attr.aria-label]="'Tecnologías usadas: ' + project.technologies.join(', ')">
             <span class="tech-badge" *ngFor="let tech of project.technologies">{{ tech }}</span>
           </div>
 
-          <div class="project-actions"
-              *ngIf="hasLink(project.demoUrl) || hasLink(project.githubUrl)">
-              <a *ngIf="hasLink(project.demoUrl)"
-                [href]="project.demoUrl"
-                class="btn btn-outline"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Abrir demo en una nueva pestaña">
-                <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
-                Sitio Web
-              </a>
+          <div class="project-actions" *ngIf="hasLink(project.demoUrl) || hasLink(project.githubUrl)">
+            <a
+              *ngIf="hasLink(project.demoUrl)"
+              [href]="project.demoUrl"
+              class="btn btn-outline"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Abrir demo en una nueva pestaña"
+            >
+              <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+              Sitio Web
+            </a>
 
-              <a *ngIf="hasLink(project.githubUrl)"
-                [href]="project.githubUrl"
-                class="btn btn-outline"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Ver código en GitHub">
-                <i class="bi bi-github" aria-hidden="true"></i>
-                Código
-              </a>
+            <a
+              *ngIf="hasLink(project.githubUrl)"
+              [href]="project.githubUrl"
+              class="btn btn-outline"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Ver código en GitHub"
+            >
+              <i class="bi bi-github" aria-hidden="true"></i>
+              Código
+            </a>
           </div>
-
         </div>
       </article>
     </div>

@@ -1,55 +1,58 @@
-<section id="blog" class="blog-section">
+<section
+  id="blog"
+  class="blog-section"
+  aria-labelledby="blog-title"
+  [seoSection]="{
+    title: 'Blog | Desarrollo .NET, Angular y SEO local',
+    description: 'Consejos y guías para crear sitios rápidos que atraen clientes: .NET, Angular y SEO local.',
+    url: 'https://dev-sebas.com/#blog',
+    type: 'website'
+  }"
+  seoId="blog"
+>
   <div class="container">
     <div class="section-header">
-      <h2 class="section-title">Últimas Publicaciones</h2>
+      <h2 id="blog-title" class="section-title">Últimas Publicaciones</h2>
       <p class="section-subtitle">
         Comparto conocimientos sobre desarrollo, arquitectura y mejores prácticas
       </p>
     </div>
 
-  <div class="blog-grid">
-  <article class="blog-card" *ngFor="let post of visiblePosts; trackBy: trackBySlug">
-    <!-- Enlace envolviendo la imagen -->
-    <a class="blog-image" [routerLink]="['/blog', post.slug]">
-      <img [src]="post.image" [alt]="post.title" loading="lazy" decoding="async" />
-      <span class="blog-category">{{ post.category }}</span>
-    </a>
+    <div class="blog-grid" role="list">
+      <article class="blog-card" role="listitem" *ngFor="let post of visiblePosts; trackBy: trackBySlug">
+        <a class="blog-image" [routerLink]="['/blog', post.slug]" [attr.aria-label]="'Abrir: ' + post.title">
+          <img [src]="post.image" [alt]="post.title" loading="lazy" decoding="async" width="640" height="360" />
+          <span class="blog-category">{{ post.category }}</span>
+        </a>
 
-    <div class="blog-content">
-      <div class="blog-meta">
-        <i class="bi bi-calendar3" aria-hidden="true"></i>
-        <span>{{ post.date }}</span>
-        <span>•</span>
-        <span>{{ post.readTime }} lectura</span>
-      </div>
+        <div class="blog-content">
+          <div class="blog-meta">
+            <i class="bi bi-calendar3" aria-hidden="true"></i>
+            <time [attr.datetime]="post.dateISO">{{ post.date }}</time>
+            <span aria-hidden="true">•</span>
+            <span>{{ post.readTime }} lectura</span>
+          </div>
 
-      <h3 class="blog-title">
-        <a [routerLink]="['/blog', post.slug]">{{ post.title }}</a>
-      </h3>
+          <h3 class="blog-title">
+            <a [routerLink]="['/blog', post.slug]">{{ post.title }}</a>
+          </h3>
 
-      <p class="blog-description">{{ post.description }}</p>
+          <p class="blog-description">{{ post.description }}</p>
 
-      <a class="blog-link" [routerLink]="['/blog', post.slug]">
-        Leer más
-        <i class="bi bi-arrow-right" aria-hidden="true"></i>
-      </a>
+          <a class="blog-link" [routerLink]="['/blog', post.slug]" [attr.aria-label]="'Leer más: ' + post.title">
+            Leer más
+            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+          </a>
+        </div>
+      </article>
     </div>
-  </article>
-</div>
-
 
     <div class="section-cta">
-      <!-- Cargar más si hay -->
-      <button *ngIf="hasMore; else allLink"
-              class="btn btn-outline-secondary"
-              (click)="loadMore()">
+      <button *ngIf="hasMore; else allLink" class="btn btn-outline-secondary" (click)="loadMore()">
         Ver más artículos
       </button>
-      <!-- Si ya no hay más, link a /blog -->
       <ng-template #allLink>
-        <a class="btn btn-outline-secondary" [routerLink]="['/blog']">
-          Leer todos los artículos
-        </a>
+        <a class="btn btn-outline-secondary" [routerLink]="['/blog']">Leer todos los artículos</a>
       </ng-template>
     </div>
   </div>

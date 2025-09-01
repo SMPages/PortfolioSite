@@ -136,3 +136,26 @@
     transition: none;
   }
 }
+
+.testimonial-indicators {
+  display: flex;
+  gap: .5rem;
+  justify-content: center;
+  margin-top: 1rem;
+
+  .indicator {
+    width: .75rem; height: .75rem;
+    border-radius: 999px;
+    border: 1px solid var(--border, #e5e7eb);
+    background: #fff;
+    cursor: pointer;
+    transition: transform .2s ease, background(.2s) ease;
+
+    &.active,
+    &:focus-visible {
+      outline: none;
+      background: var(--primary, #0f172a);
+      transform: scale(1.1);
+    }
+  }
+}

@@ -1,7 +1,19 @@
-<section id="contacto" class="contact-section">
+<section
+  id="contacto"
+  class="contact-section"
+  aria-labelledby="contact-title"
+  [seoSection]="{
+    title: 'Hablemos de tu proyecto | WhatsApp y asesoría',
+    description: 'Cuéntame tu idea y te propongo el camino más corto a una web que atraiga clientes. Asesoría por WhatsApp o email.',
+    url: 'https://dev-sebas.com/#contacto',
+    type: 'website'
+  }"
+  seoId="contacto"
+  [seoThreshold]="0.1"
+>
   <div class="container">
     <div class="section-header">
-      <h2 class="section-title">Hablemos de tu proyecto</h2>
+      <h2 id="contact-title" class="section-title">Hablemos de tu proyecto</h2>
       <p class="section-subtitle">
         ¿Tienes una idea? Conversemos sobre cómo puedo ayudarte a hacerla realidad
       </p>
@@ -15,12 +27,14 @@
           <p class="card-description">Completa el formulario y te responderé en menos de 24 horas</p>
         </div>
 
-        <form (ngSubmit)="onSubmit()" class="contact-form">
+        <form (ngSubmit)="onSubmit()" class="contact-form" aria-label="Formulario de contacto">
           <div class="form-group">
             <label for="name">Nombre completo</label>
             <input
               id="name" name="name" type="text" placeholder="Tu nombre"
               [(ngModel)]="formData.name" required class="form-input"
+              autocomplete="name" inputmode="text"
+              [attr.aria-invalid]="!formData.name ? 'true' : 'false'"
             />
           </div>
 
@@ -29,6 +43,8 @@
             <input
               id="email" name="email" type="email" placeholder="tu@email.com"
               [(ngModel)]="formData.email" required class="form-input"
+              autocomplete="email" inputmode="email"
+              [attr.aria-invalid]="!formData.email ? 'true' : 'false'"
             />
           </div>
 
@@ -37,17 +53,21 @@
             <textarea
               id="message" name="message" rows="5" placeholder="Cuéntame sobre tu proyecto..."
               [(ngModel)]="formData.message" required class="form-textarea"
+              [attr.aria-invalid]="!formData.message ? 'true' : 'false'"
             ></textarea>
           </div>
 
-          <button type="submit" class="btn btn-primary btn-full btn-icon">
+          <button type="submit" class="btn btn-primary btn-full btn-icon" aria-label="Enviar por WhatsApp">
             <i class="bi bi-whatsapp" aria-hidden="true"></i>
             Enviar por WhatsApp
           </button>
-          <!-- Alternativa por correo:
+
+          <!-- Alternativa por correo -->
+          <!--
           <button type="button" class="btn btn-outline-secondary btn-full btn-icon" (click)="onSubmit('email')">
             <i class="bi bi-envelope" aria-hidden="true"></i> Enviar por Email
-          </button> -->
+          </button>
+          -->
         </form>
       </div>
 
@@ -65,9 +85,10 @@
             </div>
           </div>
           <a
-            [href]="quickWhatsAppHref" target="_blank" rel="noopener noreferrer"
+            [href]="quickWhatsAppHref" target="_blank"
+            rel="nofollow noopener noreferrer"
             class="btn btn-outline-primary btn-full btn-icon"
-            aria-label="Escribir por WhatsApp a Sebastian"
+            aria-label="Escribir por WhatsApp a Sebastián"
           >
             <i class="bi bi-whatsapp" aria-hidden="true"></i>
             Escribir por WhatsApp
@@ -95,14 +116,18 @@
         <div class="social-section">
           <h4>Sígueme en redes</h4>
           <div class="social-links">
-            <a href="https://www.linkedin.com/in/sebastian-marciales/"
-               target="_blank" rel="noopener noreferrer"
-               class="social-link" aria-label="LinkedIn">
+            <a
+              href="https://www.linkedin.com/in/sebastian-marciales/"
+              target="_blank" rel="noopener noreferrer nofollow"
+              class="social-link" aria-label="LinkedIn"
+            >
               <i class="bi bi-linkedin" aria-hidden="true"></i>
             </a>
-            <a href="https://github.com/SMPages"
-               target="_blank" rel="noopener noreferrer"
-               class="social-link" aria-label="GitHub">
+            <a
+              href="https://github.com/SMPages"
+              target="_blank" rel="noopener noreferrer nofollow"
+              class="social-link" aria-label="GitHub"
+            >
               <i class="bi bi-github" aria-hidden="true"></i>
             </a>
           </div>

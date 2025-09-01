@@ -1,22 +1,20 @@
-<section id="inicio" class="hero-section">
+<section
+  id="inicio"
+  class="hero-section"
+  aria-labelledby="hero-title"
+  [seoSection]="{
+    title: 'Dev-Sebas: Páginas web que atraen clientes | Sebastián Marciales',
+    description: 'Sitios rápidos con SEO local, WhatsApp y Google Maps para atraer clientes reales. Desarrollo .NET + Angular.',
+    url: 'https://dev-sebas.com/#inicio',
+    type: 'website'
+  }"
+  seoId="inicio"
+>
   <div class="container">
     <div class="hero-content">
 
       <!-- Profile Image -->
       <div class="profile-image animate-fade-in">
-        <!-- Coloca la imagen en: src/public/images/profile.jpg -->
-        <img
-          src="/images/profile.JPG"
-          alt="Foto de perfil"
-          class="profile-photo"
-          loading="eager"
-        />
-        <img
-          src="/images/profile.JPG"
-          alt="Foto de perfil"
-          class="profile-photo"
-          loading="eager"
-        />
         <img
           src="/images/profile.JPG"
           alt="Foto de perfil"
@@ -33,11 +31,12 @@
 
       <!-- Subtitle -->
       <p class="hero-subtitle animate-fade-in-up text-pretty">
-       Mi nombre es <span class="text-primary">Sebastian Marciales</span> 
-y me especializo en crear sitios profesionales y rápidos con SEO local, WhatsApp y Google Maps para que tu emprendimiento, negocio en crecimiento o empresa tenga un nombre y un lugar en la web.      </p>
-
-      <!-- CTA Buttons -->
-      <div class="cta-buttons animate-fade-in-up">
+        Soy <strong class="text-primary">Sebastián Marciales</strong>, desarrollador Full Stack (.NET + Angular).
+        Creo sitios <strong>profesionales y rápidos</strong> para emprendedores, consultorios y tiendas; optimizados para
+        que <strong>te encuentren en Google</strong> y te escriban <strong>sin fricción por WhatsApp</strong>.
+      </p>
+           <!-- CTA Buttons -->
+       <div class="cta-buttons animate-fade-in-up" role="group" aria-label="Acciones principales">
          <a
             class="btn-whatsapp"
             href="https://wa.me/573228969215?text=Hola%20Sebastian%2C%20vengo%20desde%20tu%20web%20DevSebas.%20Me%20interesa%20crear%20una%20p%C3%A1gina%20para%20mi%20negocio.%20%C2%BFPodemos%20hablar%3F"
@@ -48,7 +47,7 @@ y me especializo en crear sitios profesionales y rápidos con SEO local, WhatsAp
             <i class="bi bi-whatsapp" aria-hidden="true"></i>
             Escribir por WhatsApp
           </a>
-        <a href="#proyectos" (click)="scrollToSection('proyectos')" class="btn-secondary">
+        <a href="#proyectos" (click)="scrollToSection('proyectos')" class="btn-secondary" aria-label="Ver proyectos realizados">
           Ver proyectos
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -57,7 +56,6 @@ y me especializo en crear sitios profesionales y rápidos con SEO local, WhatsAp
         </a>
       </div>
 
-      <!-- Tech Stack -->
       <div class="tech-stack animate-fade-in">
         <p class="tech-label">Tecnologías principales</p>
         <div class="tech-items">

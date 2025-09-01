@@ -1,6 +1,6 @@
 import { Component } from "@angular/core"
 import { CommonModule } from "@angular/common"
-
+import { SeoSectionDirective } from '../../core/seo-section.directive';
 interface Service {
   icon: string
   title: string
@@ -11,7 +11,7 @@ interface Service {
 @Component({
   selector: "app-services-section",
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, SeoSectionDirective],
   templateUrl: "./services-section.component.html",
   styleUrls: ["./services-section.component.scss"],
 })
@@ -21,7 +21,7 @@ export class ServicesSectionComponent {
       icon: 'bi-globe2',
       title: 'Sitios web que te encuentran',
       description:
-        'Creo sitios profesionales, rápidos y confiables para consultorios y tiendas. Los optimizo para que te vean en Google y te escriban sin fricción.',
+        'Webs profesionales, rápidas y confiables para consultorios y tiendas. Optimizo para que te vean en Google y te escriban sin fricción.',
       features: [
         'SEO local y contenido base',
         'WhatsApp y formularios de contacto',
@@ -33,14 +33,13 @@ export class ServicesSectionComponent {
     {
       icon: 'bi-megaphone',
       title: 'Landings que convierten',
-      description:
-        'Diseño páginas enfocadas en una sola acción (citas o mensajes), ideales para odontólogos, doctores y tiendas en crecimiento.',
+      description: 'Páginas enfocadas a una sola acción (citas o mensajes). Perfectas para odontólogos, doctores y tiendas en crecimiento.',
       features: [
         'Copy orientado a beneficios',
         'Testimonios y prueba social',
         'Llamados a la acción claros',
-        'Integro Analytics y eventos',
-        'Versiones por ciudad/sector'
+        'Integración con Analytics',
+        'Versión por ciudad/sector'
       ]
     },
     {
@@ -60,7 +59,7 @@ export class ServicesSectionComponent {
       icon: 'bi-bag',
       title: 'Catálogo y ventas por WhatsApp',
       description:
-        'Creo catálogos ligeros para mostrar productos/servicios y cerrar por WhatsApp. Ideal para empezar sin enredos.',
+        'Catálogo ligero para mostrar productos/servicios y cerrar por WhatsApp. Ideal para empezar sin enredos.',
       features: [
         'Colecciones y fichas simples',
         'Botón “Cotizar por WhatsApp”',
@@ -73,7 +72,7 @@ export class ServicesSectionComponent {
       icon: 'bi-braces-asterisk',
       title: 'Desarrollo a medida (.NET + Angular)',
       description:
-        'Cuando necesitas más que una web: diseño APIs, paneles y flujos a medida con buenas prácticas.',
+        'Si necesitas algo más que una web: APIs, paneles y flujos a medida, con buenas prácticas.',
       features: [
         'APIs REST robustas (JWT, EF Core)',
         'Arquitectura limpia y mantenible',
@@ -86,7 +85,7 @@ export class ServicesSectionComponent {
       icon: 'bi-shield-check',
       title: 'Mantenimiento y soporte',
       description:
-        'Me ocupo de que tu sitio siga rápido, seguro y vigente mientras tu negocio crece.',
+        'Nos ocupamos de que tu sitio siga rápido, seguro y vigente mientras tu negocio crece.',
       features: [
         'Backups y monitoreo',
         'Actualizaciones y mejoras',

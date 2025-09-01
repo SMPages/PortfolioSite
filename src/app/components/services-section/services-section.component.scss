@@ -139,3 +139,81 @@ $ds-old-gold: #b99a45;
     }
   }
 }
+.services-faq {
+  margin-top: 3rem;
+  padding: 2rem;
+  background: #f9fafb; // gris muy claro de fondo
+  border-radius: 1rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+
+  .faq-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--primary-color, #0f172a); // usa tu color principal
+    text-align: center;
+  }
+
+  details {
+    border: 1px solid #e5e7eb; // gris claro
+    border-radius: 0.75rem;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    background: #fff;
+    transition: all 0.3s ease;
+
+    &[open] {
+      border-color: var(--primary-color, #0f172a);
+      background: #fdfdfd;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    summary {
+      font-weight: 600;
+      cursor: pointer;
+      list-style: none;
+      position: relative;
+      padding-right: 1.5rem;
+
+      &::marker {
+        content: "";
+      }
+
+      &::after {
+        content: "＋";
+        position: absolute;
+        right: 0;
+        top: 0;
+        font-size: 1.2rem;
+        transition: transform 0.3s ease;
+        color: var(--primary-color, #0f172a);
+      }
+    }
+
+    &[open] summary::after {
+      content: "–";
+      transform: rotate(180deg);
+    }
+
+    p {
+      margin-top: 0.75rem;
+      line-height: 1.6;
+      color: #374151; // gris oscuro para texto
+    }
+  }
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .services-faq {
+    padding: 1.5rem;
+
+    .faq-title {
+      font-size: 1.25rem;
+    }
+
+    details {
+      padding: 0.875rem 1rem;
+    }
+  }
+}

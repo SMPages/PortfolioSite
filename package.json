@@ -7,8 +7,10 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "build:gh": "ng build --configuration production --base-href=https://github.com/SMPages/PortfolioSite",
-    "deploy:gh": "npm run build:gh && npx angular-cli-ghpages --dir=dist/dev_sebas"
+
+    "build:gh": "ng build --configuration production --base-href=/",
+    "postbuild:gh": "copy dist\\dev_sebas\\browser\\index.html dist\\dev_sebas\\browser\\404.html",
+    "deploy:gh": "npm run build:gh && npm run postbuild:gh && npx angular-cli-ghpages --dir=dist/dev_sebas/browser --cname=dev-sebas.com"
   },
   "private": true,
   "dependencies": {

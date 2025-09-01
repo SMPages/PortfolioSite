@@ -1,4 +1,16 @@
-<section id="servicios" class="services-section">
+<section
+  id="servicios"
+  class="services-section"
+  aria-labelledby="services-title"
+  [seoSection]="{
+    title: 'Servicios web para atraer clientes | SEO local + WhatsApp',
+    description: 'Te llevo de la idea a una web en producción: SEO local, WhatsApp y Google Maps para consultorios y tiendas.',
+    url: 'https://dev-sebas.com/#servicios',
+    type: 'website'
+  }"
+  seoId="servicios"
+  [seoThreshold]="0.10"
+>
   <div class="container">
     <div class="section-header">
       <h2 class="section-title">Servicios pensados para darte visibilidad</h2>
@@ -40,5 +52,24 @@
         Escribir por WhatsApp
       </a>
     </div>
+     <!-- FAQ breve (opcional para rich results) -->
+    <section class="services-faq" aria-labelledby="faq-title">
+      <h3 id="faq-title" class="faq-title">Preguntas frecuentes</h3>
+
+      <details>
+        <summary>¿En cuánto tiempo entregas un sitio?</summary>
+        <p>Entre <strong>1 y 3 semanas</strong>, según alcance y contenidos.</p>
+      </details>
+
+      <details>
+        <summary>¿Incluyes SEO local y WhatsApp?</summary>
+        <p>Sí. Configuro <em>titles/metas</em>, <strong>Google Maps</strong>, y botón de <strong>WhatsApp</strong> listo para convertir.</p>
+      </details>
+
+      <details>
+        <summary>¿Puedo empezar con un catálogo simple?</summary>
+        <p>Sí. Arrancamos con catálogo ligero y CTA a WhatsApp; luego escalamos a pagos si lo necesitas.</p>
+      </details>
+    </section>
   </div>
 </section>

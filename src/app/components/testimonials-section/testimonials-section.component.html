@@ -1,28 +1,52 @@
-<section id="testimonios" class="testimonials-section">
+<section
+  id="testimonios"
+  class="testimonials-section"
+  aria-labelledby="testimonials-title"
+  [seoSection]="{
+    title: 'Lo que dicen mis clientes | Resultados reales',
+    description: 'Testimonios reales de consultorios, tiendas y profesionales que ahora reciben más mensajes por WhatsApp y aparecen en Google.',
+    url: 'https://dev-sebas.com/#testimonios',
+    type: 'website'
+  }"
+  seoId="testimonios"
+>
   <div class="container">
     <div class="section-header">
-      <h2 class="section-title">Lo que dicen mis clientes</h2>
+      <h2 id="testimonials-title" class="section-title">Lo que dicen mis clientes</h2>
       <p class="section-subtitle">
-        Testimonios de empresas que han confiado en mis servicios
+        Testimonios de empresas y profesionales que han confiado en mis servicios
       </p>
     </div>
 
-    <div class="testimonial-container">
-      <div class="testimonial-card">
-        <div class="testimonial-content">
-          <!-- Stars -->
-          <div class="stars">
-            <i class="icon-star" *ngFor="let star of getStarsArray(testimonials[currentIndex].rating)"></i>
-          </div>
+    <div class="testimonial-container" role="region" aria-label="Carrusel de testimonios">
+      <div class="testimonial-card" role="group" [attr.aria-roledescription]="'slide'">
+        <div class="testimonial-content" aria-live="polite">
+          <!-- Estrellas -->
+          <div 
+              class="stars"
+              [attr.aria-label]="testimonials[currentIndex].rating + ' de 5 estrellas'"
+            >
+              <i 
+                class="icon-star"
+                *ngFor="let star of getStarsArray(testimonials[currentIndex].rating)"
+                aria-hidden="true"
+              ></i>
+            </div>
 
-          <!-- Testimonial Content -->
-          <blockquote class="testimonial-text">
-            "{{ testimonials[currentIndex].content }}"
+          <!-- Contenido del testimonio -->
+          <blockquote class="testimonial-text" [attr.cite]="testimonials[currentIndex].name">
+            “{{ testimonials[currentIndex].content }}”
           </blockquote>
 
-          <!-- Author -->
+          <!-- Autor -->
           <div class="testimonial-author">
-            <img [src]="testimonials[currentIndex].avatar" [alt]="testimonials[currentIndex].name" class="author-avatar" />
+            <img
+              [src]="testimonials[currentIndex].avatar"
+              [alt]="'Foto de ' + testimonials[currentIndex].name"
+              class="author-avatar"
+              width="64" height="64"
+              loading="lazy" decoding="async"
+            />
             <div class="author-info">
               <div class="author-name">{{ testimonials[currentIndex].name }}</div>
               <div class="author-position">{{ testimonials[currentIndex].position }}</div>
@@ -31,12 +55,16 @@
         </div>
       </div>
 
-      <!-- Indicators -->
-      <div class="testimonial-indicators">
+      <!-- Indicadores -->
+      <div class="testimonial-indicators" role="tablist" aria-label="Seleccionar testimonio">
         <button
-          *ngFor="let testimonial of testimonials; let i = index"
+          *ngFor="let t of testimonials; let i = index"
           class="indicator"
           [class.active]="i === currentIndex"
+          role="tab"
+          [attr.aria-selected]="i === currentIndex"
+          [attr.aria-controls]="'testimonial-panel-' + i"
+          [attr.aria-label]="'Ver testimonio de ' + t.name"
           (click)="setCurrentIndex(i)"
         ></button>
       </div>
