@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /assets/
+Sitemap: https://dev-sebas.com/sitemap.xml

@@ -125,7 +125,10 @@ $gold-dark: #b99a45;
     h4 { font-weight: 700; color: var(--foreground); margin-bottom: 1rem; }
 
     .social-links {
-      display: flex; gap: 1rem;
+      display: flex;                 /* mantenemos flex */
+      flex-direction: column;        /* 👈 apila vertical */
+      align-items: stretch;          /* que ocupen todo el ancho disponible */
+      gap: 1rem;
 
       .social-link {
         width: 2.5rem; height: 2.5rem; border: 1px solid var(--border);
@@ -141,3 +144,66 @@ $gold-dark: #b99a45;
 
 /* Utilidad: botón con icono */
 .btn-icon { display: inline-flex; align-items: center; gap: .5rem; }
+
+.social-card {
+  display: flex;
+  align-items: center;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1rem;
+  width: 100%;              /* Ocupar todo el ancho disponible */
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  margin-bottom: 1rem;      /* Espacio entre tarjetas */
+}
+
+.social-card .avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  object-fit: cover;
+  margin-right: 1rem;
+}
+
+.social-card .info {
+  flex: 1;                  /* Que la info se expanda */
+}
+
+.social-card .info h4 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111;
+}
+
+.social-card .info p {
+  margin: 0.25rem 0;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.social-card .btn {
+  display: inline-block;
+  margin-top: 0.4rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  text-decoration: none;
+  color: #fff;
+  transition: background(0.2s);
+}
+
+/* Colores específicos */
+.btn.linkedin {
+  background: #0A66C2;
+}
+.btn.linkedin:hover {
+  background: #084a90;
+}
+
+.btn.insta {
+  background: #E1306C;
+}
+.btn.insta:hover {
+  background: #C12A5C;
+}

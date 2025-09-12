@@ -10,75 +10,108 @@
   padding: 5rem 0;
 }
 
-.hero-content {
-  max-width: 64rem;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.profile-image {
-//  margin-bottom: 2rem;
-
-  .profile-placeholder {
-    width: 8rem;
-    height: 8rem;
-    margin: 0 auto;
-    border-radius: 50%;
-    background: linear-gradient(135deg, $primary-color, $secondary-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.5rem;
-    font-family: $font-serif;
-    font-weight: 700;
-    color: #fff;
-  }
-}
-
+/* ===== Title arriba (fuera de hero-content) ===== */
 .hero-title {
   font-size: 2.5rem;
   font-family: $font-serif;
   font-weight: 700;
   color: $foreground-color;
-  margin-bottom: 1.5rem;
   line-height: 1.2;
+  text-align: center;                  /* centrado en todas las vistas */
+  margin: 0 auto 1.5rem;               /* separa del contenido */
+  max-width: 22ch;                     /* ancho óptimo de lectura */
 
-  @media (min-width: $breakpoint-sm) {
-    font-size: 3rem;
-  }
-
+  @media (min-width: $breakpoint-sm) { font-size: 3rem; }
   @media (min-width: $breakpoint-lg) {
     font-size: 3.75rem;
+    max-width: 20ch;                   /* un poco más compacto en desktop */
+    margin-bottom: 2rem;
   }
 
   .text-primary { color: $primary-color; }
   .text-secondary { color: $secondary-color; }
 }
 
-.hero-subtitle {
-  font-size: 1.25rem;
-  color: $muted-foreground-color;
-  margin-bottom: 2rem;
-  max-width: 48rem;
-  margin-left: auto;
-  margin-right: auto;
- .text-primary { font-weight: bold; font-style: italic;}
-  @media (min-width: $breakpoint-sm) {
-    font-size: 1.5rem;
+/* ===== Wrapper del contenido ===== */
+.hero-content {
+  /* móvil: columna centrada con gaps cómodos */
+  max-width: 64rem;
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  row-gap: 1.25rem;
+
+  /* desktop: 2 columnas balanceadas */
+  @media (min-width: $breakpoint-lg) {
+    max-width: 72rem; /* un poco más ancho para respirar */
+    display: grid;
+    grid-template-columns: minmax(0, 520px) minmax(0, 1fr);
+    align-items: center;
+    column-gap: clamp(1.75rem, 3vw, 3rem);
+    text-align: left; /* solo afecta a elementos sin override */
   }
 }
 
+/* ===== Foto ===== */
+.hero-section .profile-image {
+  max-inline-size: min(540px, 100%);
+  margin-inline: auto;              /* centrado en móvil */
+  border-radius: 1rem;
+  overflow: hidden;
+  background: var(--card, #fff);
+  outline: 1px solid rgba(0,0,0,.06);
+  box-shadow: 0 6px 30px rgba(0,0,0,.12);
+  aspect-ratio: 5 / 3;
+
+  @media (max-width: $breakpoint-lg) { aspect-ratio: 4 / 3; }
+
+  @media (min-width: $breakpoint-lg) {
+    grid-column: 1;
+    grid-row: 1 / span 3;           /* foto alineada con subtítulo y CTAs */
+    justify-self: center;
+  }
+}
+
+.hero-section .profile-image .profile-photo {
+  inline-size: 100% !important;
+  block-size: 100% !important;
+  display: block;
+  object-fit: cover !important;
+  object-position: 52% 40%;
+  border-radius: inherit;
+  margin: 0 !important;
+}
+
+/* ===== Subtítulo (texto) ===== */
+.hero-subtitle {
+  font-size: 1.25rem;
+  color: $muted-foreground-color;
+  max-width: 48rem;
+  margin: 0 auto 1.25rem;            /* centrado y con respiración */
+
+  .text-primary { font-weight: bold; font-style: italic; }
+  @media (min-width: $breakpoint-sm) { font-size: 1.5rem; }
+
+  /* Desktop: centrado visual en la columna derecha */
+  @media (min-width: $breakpoint-lg) {
+    grid-column: 2;
+    text-align: justify;              /* << centramos el texto en PC */
+    max-width: 40rem;
+    margin: 0 auto 1.5rem;
+  }
+}
+
+/* ===== Botones ===== */
 .cta-buttons {
   display: flex;
-  flex-direction: column;
+  flex-direction: column;            /* móvil: en columna */
   gap: 1rem;
   justify-content: center;
   align-items: center;
-  margin-bottom: 4rem;
+  margin-bottom: 2rem;
 
-  @media (min-width: $breakpoint-sm) {
-    flex-direction: row;
-  }
+  @media (min-width: $breakpoint-sm) { flex-direction: row; }
 
   a {
     display: inline-flex;
@@ -90,9 +123,24 @@
 
     svg { width: 20px; height: 20px; }
   }
+
+  /* Desktop: también centrados (no pegados a la izquierda) */
+  @media (min-width: $breakpoint-lg) {
+    grid-column: 2;
+    justify-content: center;         /* << centramos botones en PC */
+  }
 }
 
+/* ===== Tech stack ===== */
 .tech-stack {
+  /* móvil: centrado (ya por defecto) */
+
+  @media (min-width: $breakpoint-lg) {
+    grid-column: 2;
+    /* mantenemos centrado para que haga bloque con el subtítulo y CTAs */
+    text-align: center;
+  }
+
   .tech-label {
     font-size: 0.875rem;
     color: $muted-foreground-color;
@@ -102,7 +150,7 @@
   .tech-items {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: center;         /* centrado en todas las vistas */
     gap: 1rem;
   }
 
@@ -115,12 +163,4 @@
     font-weight: 500;
     color: var(--card-foreground);
   }
-}
-.profile-photo {
-  width: 15rem;
-  height: 15rem;
-  border-radius: 10%;
-  object-fit: cover;
-  display: inline-flex;
-  margin: 0 5px;
 }

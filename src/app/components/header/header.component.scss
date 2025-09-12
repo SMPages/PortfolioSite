@@ -187,3 +187,72 @@ $ds-sand: #d5c28f;
     &:hover { color: $primary-color; }
   }
 }
+/* ===== Header compacto en móviles ===== */
+@media (max-width: $breakpoint-md) {
+  .nav {                         /* menos alto */
+    padding: .5rem 0;
+  }
+
+  .nav-content {                 /* menos separación horizontal */
+    column-gap: .5rem;
+    grid-template-columns: 1fr auto; /* logo | hamburguesa */
+  }
+
+  .logo {                        /* logo más pequeño y ceñido */
+    font-size: clamp(18px, 5.2vw, 22px);
+    gap: .35rem;
+    line-height: 1;
+  }
+
+  .mobile-menu-btn {             /* botón más compacto */
+    padding: .25rem;
+    gap: 3px;
+
+    .hamburger-line {
+      width: 22px;
+      height: 2px;
+    }
+  }
+
+  .mobile-nav {                  /* menú desplegable con menos aire */
+    padding: .5rem 0;
+    margin-top: .5rem;
+  }
+
+  /* Evita que el hero quede “tapado” por el header */
+  .hero-section {
+    padding-top: clamp(3.25rem, 8vh, 4.25rem);
+  }
+}
+
+/* ===== Aún más compacto cuando hay scroll (móvil y desktop) ===== */
+.header.scrolled .nav {
+  padding: .35rem 0;
+}
+.header.scrolled .logo {
+  font-size: clamp(16px, 4.6vw, 20px);
+}
+/* ===== Ajustes del logo en responsive ===== */
+.logo {
+  font-size: clamp(18px, 5vw, 26px);   /* límite máximo 26px */
+  white-space: nowrap;                 /* evita que se corte en dos líneas */
+  line-height: 1;
+}
+
+/* En pantallas medianas/grandes ajustamos mejor */
+@media (min-width: $breakpoint-md) {
+  .logo {
+    font-size: clamp(20px, 2vw, 28px);
+  }
+}
+
+/* Contenedor nav más compacto en pantallas chicas */
+@media (max-width: $breakpoint-md) {
+  .nav {
+    padding: .5rem 0;                   /* reduce altura */
+  }
+
+  .nav-content {
+    column-gap: .5rem;                  /* menos espacio horizontal */
+  }
+}

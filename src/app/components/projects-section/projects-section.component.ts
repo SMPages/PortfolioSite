@@ -30,7 +30,7 @@ export class ProjectsSectionComponent implements OnInit {
         'Landing con SEO local, Google Maps y contacto por WhatsApp para aumentar citas. Contenido claro y tiempos de carga rápidos.',
       image: '/images/dental-landing.png',
       technologies: ['Angular', 'Google Maps'],
-      demoUrl: 'https://smpages.github.io/AlquimiaDental/',
+      demoUrl: 'https://alquimiadental.com/es',
       githubUrl: '#',
       slug: 'web-consultorio-odontologico'
     },
