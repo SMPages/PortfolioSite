@@ -35,6 +35,16 @@ export class ProjectsSectionComponent implements OnInit {
       slug: 'web-consultorio-odontologico'
     },
     {
+      title: 'Web para consultorio de psicología',
+      description:
+        'Landing con SEO local, Google Maps y contacto por WhatsApp para aumentar consultas. Contenido claro y tiempos de carga rápidos.',
+      image: '/images/psicologia-landing.png',
+      technologies: ['Angular', 'postgres','Google Maps'],
+      demoUrl: 'https://draalejandracabarique.com/',
+      githubUrl: '#',
+      slug: 'web-consultorio-psicologia'
+    },
+    {
       title: 'Sistema de Gestión Empresarial',
       description:
         'Plataforma para inventarios, ventas y reportes con arquitectura de microservicios. Escalable, segura y lista para crecer.',

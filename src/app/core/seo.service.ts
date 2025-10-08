@@ -17,7 +17,7 @@ export class SeoService {
   }) {
     const {
       title, description,
-      image = 'https://dev-sebas.com/profile.jpg',
+      image = 'https://dev-sebas.com/profile.png',
       url = typeof window !== 'undefined' ? window.location.href : 'https://dev-sebas.com/',
       robots = 'index,follow',
       type = 'website'
