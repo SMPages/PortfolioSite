@@ -1,219 +1,199 @@
-@use '../../../styles.scss' as *;
-
-/* --- Paleta dorada (fallbacks por si no existen en :root) --- */
-$ds-gold: #C7AE6A;
-$ds-old-gold: #b99a45;
-
-/* --- Sección --- */
 .services-section {
-  padding: 5rem 0;
-  background-color: var(--muted);
+  padding: 6rem 0;
+  position: relative;
+}
 
-  .container { @include container; }
+.section-header {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 4rem;
 
-  .section-header {
-    text-align: center;
-    margin-bottom: 4rem;
-
-    .section-title {
-      font-size: 2rem;
-      font-family: $font-serif;
-      font-weight: 700;
-      color: var(--foreground);
-      margin-bottom: 1rem;
-      text-wrap: balance;
-
-      @include breakpoint(sm) { font-size: 2.5rem; }
-    }
-
-    .section-subtitle {
-      font-size: 1.1rem;
-      color: var(--muted-foreground);
-      max-width: 38rem;
-      margin: 0 auto;
-      text-wrap: pretty;
-    }
+  .section-title {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #fff 0%, var(--muted) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
-  /* --- Grid de cards --- */
-  .services-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    margin-bottom: 3rem;
-
-    @include breakpoint(md) {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  /* --- Card --- */
-  .service-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: .75rem;
-    padding: 1.5rem;
-    transition: box-shadow .25s ease, transform .15s ease, border-color .25s ease;
-
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 28px -10px rgba(0,0,0,.12), 0 6px 12px -8px rgba(0,0,0,.08);
-      border-color: var(--primary);
-    }
-
-    .service-header {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-bottom: 1rem;
-
-      .service-icon {
-        width: 3rem; height: 3rem;
-        border-radius: .6rem;
-        display: grid; place-items: center;
-        background: linear-gradient(90deg, #{$ds-gold}, #{$ds-old-gold});
-        box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
-
-        i {
-          font-size: 1.25rem;
-          color: var(--card); // contraste con el fondo dorado
-          line-height: 1;
-        }
-      }
-
-      .service-title {
-        font-size: 1.25rem;
-        font-family: $font-serif;
-        color: var(--card-foreground);
-        margin: 0;
-      }
-    }
-
-    .service-description {
-      color: var(--muted-foreground);
-      margin-bottom: 1rem;
-      line-height: 1.6;
-    }
-
-    .service-features {
-      list-style: none;
-      padding: 0; margin: 0;
-      display: grid;
-      gap: .5rem;
-
-      .feature-item {
-        display: flex; align-items: center; gap: .5rem;
-        font-size: .95rem;
-        color: var(--card-foreground);
-
-        .feature-dot {
-          width: .5rem; height: .5rem; border-radius: 50%;
-          flex-shrink: 0;
-          background: linear-gradient(90deg, #{$ds-gold}, #{$ds-old-gold});
-        }
-      }
-    }
-  }
-
-  .section-cta {
-    text-align: center;
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: .8rem 1.6rem;
-      font-size: 1rem;
-      font-weight: 600;
-      text-decoration: none;
-      border-radius: .6rem;
-      transition: transform .05s ease, filter .2s ease, box-shadow .2s ease;
-
-      &.btn-secondary {
-        background: var(--secondary);
-        color: var(--secondary-foreground);
-
-        &:hover { filter: brightness(.98); }
-        &:active { transform: translateY(1px); }
-      }
-    }
+  .section-subtitle {
+    color: var(--muted);
+    font-size: 1.1rem;
+    line-height: 1.6;
   }
 }
+
+.services-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-bottom: 4rem;
+
+  @media (min-width: 600px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3rem;
+  }
+}
+
+.service-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  padding: 2.5rem;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at top right, rgba(0, 242, 254, 0.1) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 0;
+  }
+
+  &:hover {
+    transform: translateY(-5px);
+    border-color: var(--card-hover-border);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    
+    &::before {
+      opacity: 1;
+    }
+
+    .service-icon {
+      background: rgba(0, 242, 254, 0.15);
+      color: var(--primary);
+      transform: scale(1.1);
+    }
+  }
+
+  > * {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+.service-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.service-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: var(--muted);
+  transition: all 0.3s ease;
+}
+
+.service-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.service-description {
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.service-features {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 1.5rem;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.95rem;
+  color: #ccc;
+
+  .feature-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--primary);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--primary);
+  }
+}
+
+.section-cta {
+  text-align: center;
+  margin-top: 2rem;
+}
+
 .services-faq {
-  margin-top: 3rem;
-  padding: 2rem;
-  background: #f9fafb; // gris muy claro de fondo
-  border-radius: 1rem;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  max-width: 800px;
+  margin: 6rem auto 0;
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  padding: 3rem;
 
   .faq-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    color: var(--primary-color, #0f172a); // usa tu color principal
     text-align: center;
+    font-size: 2rem;
+    margin-bottom: 2.5rem;
   }
 
   details {
-    border: 1px solid #e5e7eb; // gris claro
-    border-radius: 0.75rem;
-    padding: 1rem 1.25rem;
-    margin-bottom: 1rem;
-    background: #fff;
-    transition: all 0.3s ease;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 
-    &[open] {
-      border-color: var(--primary-color, #0f172a);
-      background: #fdfdfd;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    &:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
     }
 
     summary {
       font-weight: 600;
+      font-size: 1.1rem;
       cursor: pointer;
-      list-style: none;
-      position: relative;
-      padding-right: 1.5rem;
-
-      &::marker {
-        content: "";
+      color: var(--foreground);
+      outline: none;
+      
+      &:hover {
+        color: var(--primary);
       }
-
-      &::after {
-        content: "＋";
-        position: absolute;
-        right: 0;
-        top: 0;
-        font-size: 1.2rem;
-        transition: transform 0.3s ease;
-        color: var(--primary-color, #0f172a);
-      }
-    }
-
-    &[open] summary::after {
-      content: "–";
-      transform: rotate(180deg);
     }
 
     p {
-      margin-top: 0.75rem;
+      color: var(--muted);
+      margin-top: 1rem;
+      padding-left: 1.5rem;
       line-height: 1.6;
-      color: #374151; // gris oscuro para texto
-    }
-  }
-}
 
-/* Responsive tweaks */
-@media (max-width: 768px) {
-  .services-faq {
-    padding: 1.5rem;
-
-    .faq-title {
-      font-size: 1.25rem;
-    }
-
-    details {
-      padding: 0.875rem 1rem;
+      strong {
+        color: var(--foreground);
+      }
     }
   }
 }

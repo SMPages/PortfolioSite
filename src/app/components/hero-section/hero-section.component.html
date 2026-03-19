@@ -11,63 +11,58 @@
   seoId="inicio"
 >
   <div class="container">
-         <!-- Main Heading -->
+    
+    <!-- Left Column: Text Content -->
+    <div class="hero-text-content">
       <h1 class="hero-title animate-fade-in-up text-balance">
-        ¿Buscas darte a conocer en la <span class="text-primary">web?</span> <br/>
-        <span class="text-secondary">Llegaste al lugar indicado.</span>
+        Construyo soluciones digitales para la <span class="text-gradient">web</span> <br/>
       </h1>
 
-    <div class="hero-content">
-
-      <!-- Profile Image -->
-      <div class="profile-image animate-fade-in">
-        <img
-          src="/images/profile.png"
-          alt="Foto de perfil"
-          class="profile-photo"
-          loading="eager"
-        />
-      </div>
-
- 
-      <!-- Subtitle -->
-      <p class="hero-subtitle animate-fade-in-up text-pretty">
-        Soy <strong class="text-primary">Sebastián Marciales</strong>, desarrollador Full Stack (.NET + Angular).
-        Creo sitios <strong>profesionales y rápidos</strong> para emprendedores, consultorios y tiendas; optimizados para
-        que <strong>te encuentren en Google</strong> y te escriban <strong>sin fricción por WhatsApp</strong>.
+      <p class="hero-subtitle animate-fade-in-up delay-100 text-pretty">
+        Soy <strong>Sebastián Marciales</strong>, desarrollador Full Stack (.NET + Angular).
+        Creo sitios <strong>rápidos, escalables y orientados a resultados</strong>. Optimizados para 
+        crecimiento en Google y contacto directo <strong>sin fricción</strong>.
       </p>
 
-      <!-- CTA Buttons -->
-      <div class="cta-buttons animate-fade-in-up" role="group" aria-label="Acciones principales">
+      <div class="cta-buttons animate-fade-in-up delay-200" role="group" aria-label="Acciones principales">
         <a
           class="btn-whatsapp"
           href="https://wa.me/573228969215?text=Hola%20Sebastian%2C%20vengo%20desde%20tu%20web%20DevSebas.%20Me%20interesa%20crear%20una%20p%C3%A1gina%20para%20mi%20negocio.%20%C2%BFPodemos%20hablar%3F"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Escribir por WhatsApp a Sebastian"
         >
           <i class="bi bi-whatsapp" aria-hidden="true"></i>
-          Escribir por WhatsApp
+          Hablemos por WhatsApp
         </a>
-        <a href="#proyectos" (click)="scrollToSection('proyectos')" class="btn-secondary" aria-label="Ver proyectos realizados">
-          Ver proyectos
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-            <polyline points="12,5 19,12 12,19"></polyline>
-          </svg>
+        <a href="#proyectos" (click)="scrollToSection('proyectos')" class="btn-secondary">
+          Ver mi trabajo
         </a>
       </div>
 
-    
-
-    </div>
-      <div class="tech-stack animate-fade-in">
-        <p class="tech-label">Tecnologías principales</p>
+      <div class="tech-stack animate-fade-in-up delay-300">
+        <p class="tech-label">Stack Tecnológico</p>
         <div class="tech-items">
           <span *ngFor="let tech of techStack" class="tech-item">
             {{ tech }}
           </span>
         </div>
       </div>
+    </div>
+
+    <!-- Right Column: Profile Image -->
+    <div class="hero-image-content animate-fade-in delay-200">
+      <div class="profile-card">
+        <img
+          src="/images/profile.png"
+          alt="Sebastián Marciales - Desarrollador Full Stack"
+          class="profile-photo"
+          loading="eager"
+        />
+        <div class="status-badge">
+          Disponible para proyectos
+        </div>
+      </div>
+    </div>
+
   </div>
 </section>

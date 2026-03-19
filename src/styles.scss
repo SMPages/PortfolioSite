@@ -1,37 +1,40 @@
 @use "sass:map";
 @import "bootstrap-icons/font/bootstrap-icons.css";
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
 
-// Color variables - sage green and terracotta theme
+// Premium Dark Mode Color Variables
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.2 0 0);
-  --card: oklch(0.98 0 0);
-  --card-foreground: oklch(0.2 0 0);
-  --primary: oklch(57.582% 0.1131 147.749); // Sage green
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(62.609% 0.21521 26.02); // Terracotta
-  --secondary-foreground: oklch(0.2 0 0);
-  --muted: oklch(0.88 0 0);
-  --muted-foreground: oklch(0.5 0 0);
-  --accent: oklch(55.195% 0.19692 26.58);
-  --accent-foreground: oklch(0.2 0 0);
-  --border: oklch(0.85 0 0);
-  --ring: oklch(0.7 0.05 120);
+  --background: #04040a;
+  --foreground: #ededed;
+  --muted: #a1a1aa;
+  
+  --card-bg: rgba(255, 255, 255, 0.03);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --card-hover-border: rgba(255, 255, 255, 0.2);
+  
+  --primary: #00f2fe;
+  --primary-foreground: #000000;
+  
+  --secondary: #4facfe;
+  --secondary-foreground: #ffffff;
+  
+  --whatsapp: #128C7E;
+  --whatsapp-hover: #25D366;
+  
+  --border: rgba(255, 255, 255, 0.1);
+  --ring: rgba(0, 242, 254, 0.4);
 }
 
 // SCSS Variables
 $primary-color: var(--primary);
-$secondary-color: var(--secondary);
 $background-color: var(--background);
 $foreground-color: var(--foreground);
 $muted-color: var(--muted);
-$muted-foreground-color: var(--muted-foreground);
 $border-color: var(--border);
 
 // Typography
 $font-sans: 'Inter', sans-serif;
-$font-serif: 'Playfair Display', serif;
+$font-heading: 'Plus Jakarta Sans', sans-serif;
 
 // Breakpoints
 $breakpoint-sm: 600px;
@@ -40,17 +43,21 @@ $breakpoint-lg: 1200px;
 
 // Mixins
 @mixin container {
-  max-width: 80%;
+  width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 1.5rem;
   
-  @media (min-width: $breakpoint-sm) {
-    padding: 0 1.5rem;
-  }
-  
-  @media (min-width: $breakpoint-lg) {
+  @media (min-width: $breakpoint-md) {
     padding: 0 2rem;
   }
+}
+
+@mixin glass {
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--card-border);
 }
 
 @mixin button-base {
@@ -58,48 +65,43 @@ $breakpoint-lg: 1200px;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
-  font-weight: 500;
+  padding: 0.75rem 1.75rem;
+  border-radius: 9999px; // Pill shape for modern look
+  font-weight: 600;
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   border: none;
   font-family: $font-sans;
+  font-size: 0.95rem;
+  letter-spacing: -0.01em;
 }
 
 @mixin button-primary {
   @include button-base;
-  background-color: $primary-color;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
   color: var(--primary-foreground);
+  box-shadow: 0 4px 14px 0 rgba(0, 242, 254, 0.3);
   
   &:hover {
-    opacity: 0.9;
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px 0 rgba(0, 242, 254, 0.4);
+  }
+  &:active {
+    transform: translateY(0);
   }
 }
 
 @mixin button-secondary {
   @include button-base;
   background-color: transparent;
-  color: $secondary-color;
-  border: 1px solid $secondary-color;
+  color: var(--foreground);
+  border: 1px solid var(--border);
   
   &:hover {
-    background-color: $secondary-color;
-    color: var(--background);
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.2);
   }
-}
-
-@mixin fade-in-up {
-  opacity: 0;
-  transform: translateY(30px);
-  animation: fadeInUp 0.6s ease-out forwards;
-}
-
-@mixin fade-in {
-  opacity: 0;
-  animation: fadeIn 0.8s ease-out forwards;
 }
 
 // Global styles
@@ -111,6 +113,7 @@ $breakpoint-lg: 1200px;
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 100px; // For fixed header
 }
 
 body {
@@ -120,13 +123,33 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-image: 
+    radial-gradient(circle at 15% 50%, rgba(0, 242, 254, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 85% 30%, rgba(79, 172, 254, 0.05) 0%, transparent 50%);
+  background-attachment: fixed;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: $font-heading;
+  letter-spacing: -0.02em;
+  color: var(--foreground);
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: color 0.2s;
+  
+  &:hover {
+    color: var(--secondary);
+  }
 }
 
 // Animations
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -135,21 +158,35 @@ body {
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes pulse-glow {
+  0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(37, 211, 102, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
 }
 
 .animate-fade-in-up {
-  @include fade-in-up;
+  opacity: 0;
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .animate-fade-in {
-  @include fade-in;
+  opacity: 0;
+  animation: fadeIn 1s ease-out forwards;
 }
+
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
 
 // Utility classes
 .container {
@@ -164,6 +201,13 @@ body {
   @include button-secondary;
 }
 
+.text-gradient {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 .text-balance {
   text-wrap: balance;
 }
@@ -172,81 +216,69 @@ body {
   text-wrap: pretty;
 }
 
-
-$breakpoints: (
-  xs: 0,
-  sm: 600px,
-  md: 900px,
-  lg: 1200px,
-  xl: 1536px
-);
-
-@mixin breakpoint($from, $to: null) {
-  $min: map.get($breakpoints, $from);
-
-  @if $min == null {
-    @error "Breakpoint `#{$from}` no existe. Usa: xs, sm, md, lg, xl";
-  }
-
-  @if $to == null {
-    @media (min-width: $min) {
-      @content;
-    }
-  } @else {
-    $max: map.get($breakpoints, $to);
-
-    @if $max == null {
-      @error "Breakpoint `#{$to}` no existe. Usa: xs, sm, md, lg, xl";
-    }
-
-    // pequeño ajuste para no solapar con el siguiente min-width
-    @media (min-width: $min) and (max-width: calc(#{$max} - 0.02px)) {
-      @content;
-    }
-  }
-}
-
-$whatsapp-green: #139944;
-$whatsapp-green2: #fff;
-
+// WhatsApp Special Button
 .btn-whatsapp {
-  padding: 0.75rem 2rem;
-  font-size: 1.125rem;
-  display: inline-flex;
-  align-items: center;
-  gap: .5rem;
-  border-radius: .6rem;
-  text-decoration: none;
-  font-weight: 700;
-  background: $whatsapp-green;
+  @include button-base;
+  background: var(--whatsapp);
   color: #fff;
-  transition: filter .2s ease, transform .02s ease, box-shadow .2s ease;
-  box-shadow: 0 2px 10px rgba(37, 211, 102, .25);
-
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 4px 15px rgba(18, 140, 126, 0.3);
+  
   i { font-size: 1.15em; line-height: 1; }
 
-  &:hover { background: $whatsapp-green2; color: $whatsapp-green; border: 1px solid $whatsapp-green;}
-  &:active { transform: translateY(1px); }
+  &:hover { 
+    background: var(--whatsapp-hover); 
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+  }
+  
+  &.pulse {
+    animation: pulse-glow 2s infinite;
+  }
 }
 
 .btn-back {
-  display: inline-block;
-  font-weight: 600;
-  border-radius: 8px;
-  background-color: var(--primary);
-  color: var(--primary-foreground);
-  border: 1px solid var(--primary);
-  padding: 10px 16px;
-  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  border-radius: 9999px;
+  background-color: rgba(255,255,255,0.05);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  transition: all 0.2s;
 
+  &:hover { 
+    background-color: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.2);
+  }
 }
 .btn-back.mb-3b {
     margin-bottom: 50px;
 }
-.btn-back:hover 
-{ 
-  text-decoration: underline; 
-  background-color: var(--primary-foreground);
-  color: var(--primary);
-  border: 1px solid var(--primary);
+
+// Focus outline for accessibility
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+// Custom Scrollbar
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.1);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.2);
 }

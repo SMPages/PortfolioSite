@@ -1,145 +1,128 @@
-@use '../../../styles.scss' as *; // ajusta la ruta si tu carpeta difiere
-
 .blog-list-page {
-  padding: 5rem 0;
-  background: var(--background);
-
-  h1 {
-    font-family: $font-serif;
-    font-weight: 700;
-    color: var(--foreground);
-    margin: 0 0 1.5rem;
-    text-wrap: balance;
-    font-size: 2rem;
-
-    @include breakpoint(sm) { font-size: 2.25rem; }
-    @include breakpoint(md) { font-size: 2.5rem; }
-  }
-
-  .grid {
-    display: grid;
-    gap: 1.5rem;
-    grid-template-columns: 1fr;
-
-    @include breakpoint(md) { grid-template-columns: repeat(2, 1fr); }
-    @include breakpoint(xl) { grid-template-columns: repeat(3, 1fr); }
-  }
-
-  .card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: .9rem;
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    transition: box-shadow .25s ease, transform .15s ease, border-color .25s ease;
-
-    &:hover {
-      transform: translateY(-2px);
-      border-color: var(--primary);
-      box-shadow: 0 12px 28px -10px rgba(0,0,0,.12), 0 6px 12px -8px rgba(0,0,0,.08);
-    }
-
-    a { text-decoration: none; }
-
-    img {
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      object-fit: cover;
-      display: block;
-      border-radius: .6rem;
-      margin-bottom: .8rem;
-    }
-
-    h2 {
-      font-family: $font-serif;
-      font-size: 1.25rem;
-      line-height: 1.2;
-      margin: .25rem 0 .35rem;
-
-      a {
-        color: var(--card-foreground);
-        &:hover { color: var(--primary); }
-      }
-    }
-
-    .meta {
-      color: var(--muted-foreground);
-      font-size: .9rem;
-      margin-bottom: .5rem;
-    }
-
-    .desc {
-      color: var(--muted-foreground);
-      margin-bottom: 1rem;
-      line-height: 1.6;
-      text-wrap: pretty;
-      flex-grow: 1;
-    }
-
-    .btn {
-      align-self: flex-start;
-      display: inline-flex;
-      align-items: center;
-      gap: .5rem;
-      padding: .6rem 1rem;
-      font-weight: 700;
-      border-radius: .6rem;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--foreground);
-      transition: transform .05s ease, filter .2s ease, box-shadow .2s ease;
-
-      &:hover {
-        border-color: var(--primary);
-        box-shadow: 0 6px 18px -8px rgba(0,0,0,.15);
-        filter: brightness(.98);
-      }
-      &:active { transform: translateY(1px); }
-    }
-  }
+  padding-top: 120px;
+  padding-bottom: 6rem;
+  min-height: 100vh;
 }
-
-/* Si usas el mismo estilo de badges/categorías que en cards previas */
 
 .title-bar {
   display: flex;
-  align-items: center;
-  gap: 1rem;                 /* espacio entre botón y título */
-  margin: 0 0 1.25rem;
-
-  /* En móviles, permite que salten de línea con buen espaciado */
-  flex-wrap: wrap;
-  row-gap: .75rem;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 4rem;
+  
+  @media(min-width: 600px) {
+    flex-direction: row;
+    align-items: center;
+    gap: 2rem;
+  }
 }
 
 .page-title {
-  margin-bottom: 0px !important;
-  line-height: 1;
-  font-family: $font-serif;
-  font-weight: 800;
-  color: var(--foreground);
-
-  font-size: 1.75rem;
-  @include breakpoint(sm) { font-size: 2rem; }
-  @include breakpoint(md) { font-size: 2.25rem; }
+  font-size: 3rem;
+  font-family: var(--font-heading);
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #fff, var(--muted));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
 }
 
-// /* Botón “volver” consistente con el resto del sitio */
-// .btn-back {
-//   display: inline-flex;
-//   align-items: center;
-//   gap: .5rem;
-//   padding: .6rem 1rem;
-//   border-radius: .6rem;
-//   border: 1px solid var(--primary);
-//   background: var(--primary);
-//   color: var(--primary-foreground);
-//   text-decoration: none;
-//   transition: box-shadow .2s ease, transform .05s ease, opacity .2s ease;
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
 
-//   i { font-size: 1rem; line-height: 1; }
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
 
-//   &:hover   { opacity: .92; box-shadow: 0 8px 22px -12px rgba(0,0,0,.25); }
-//   &:active  { transform: translateY(1px); }
-// }
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.card {
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.4s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+
+    img {
+      transform: scale(1.05);
+    }
+  }
+
+  > a {
+    display: block;
+    height: 200px;
+    overflow: hidden;
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    margin: 1.5rem 1.5rem 0.5rem;
+    line-height: 1.4;
+    
+    a {
+      color: var(--foreground);
+      text-decoration: none;
+      transition: color 0.2s;
+      
+      &:hover {
+        color: var(--primary);
+      }
+    }
+  }
+
+  .meta {
+    margin: 0 1.5rem 1rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .desc {
+    margin: 0 1.5rem 1.5rem;
+    color: #a1a1aa;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    flex: 1;
+  }
+
+  .btn {
+    margin: 0 1.5rem 1.5rem;
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--card-border);
+    color: var(--primary);
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.3s;
+    text-decoration: none;
+
+    &:hover {
+      background: rgba(0,242,254,0.1);
+      border-color: rgba(0,242,254,0.3);
+    }
+  }
+}
